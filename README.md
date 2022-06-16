@@ -21,14 +21,28 @@ It's also work on CLI.
 * reverse
 * grayscale
 
-| resize                                            | trim                                            | grayscale                                            |
-|---------------------------------------------------|-------------------------------------------------|------------------------------------------------------|
-| <img src="assets/image/resize.gif" width="200px"> | <img src="assets/image/trim.gif" width="200px"> | <img src="assets/image/grayscale.gif" width="200px"> |
-
-
-| reverse horizon                                      | reverse vertical                                     |
-|------------------------------------------------------|------------------------------------------------------|
-| <img src="assets/image/reverse-x.gif" width="200px"> | <img src="assets/image/reverse-y.gif" width="200px"> |
+ <table>
+    <tr>
+      <td>resize</td>
+      <td>trim</td>
+      <td>grayscale</td>
+    </tr>
+    <tr>
+      <td><img src="assets/image/resize.gif"></td>
+      <td><img src="assets/image/trim.gif"></td>
+      <td><img src="assets/image/grayscale.gif"> </td>
+    </tr>
+    <tr>
+      <td>reverse horizon </td>
+      <td>reverse vertical </td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><img src="assets/image/reverse-x.gif" width="200px"></td>
+      <td><img src="assets/image/reverse-y.gif" width="200px"></td>
+      <td></td>
+    </tr>
+ </table>
 
 ## Supported Extensions
 * png
