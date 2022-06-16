@@ -1,5 +1,6 @@
 imgedit
 ===============
+[![Go](https://github.com/icemint0828/imgedit/actions/workflows/go.yml/badge.svg)](https://github.com/icemint0828/imgedit/actions/workflows/go.yml)
 
 ## Overview
 Imgedit is a package that performs image processing such as resizing and trimming.  
