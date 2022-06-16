@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"imgedit/internal/app"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/icemint0828/imgedit/internal/app"
 )
 
 const (
