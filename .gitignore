@@ -4,7 +4,10 @@
 # config golangci-lint
 .golangci-lint.yaml
 
-# golang
+# create zip for execuatable file
+execuatables/
+
+# mac os
 .DS_Store
 
 # output test files
