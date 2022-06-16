@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	ImagePath  = "../../assets/image/mint.png"
-	OutputPath = "../../assets/output/test.png"
+	ImagePath  = "assets/image/mint.png"
+	OutputPath = "assets/output/test.png"
 )
 
 func GetTestImage() image.Image {

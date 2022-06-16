@@ -14,7 +14,7 @@ import (
 	"strconv"
 	"strings"
 
-	"imgedit/pkg/imgedit"
+	"github.com/icemint0828/imgedit"
 )
 
 var SupportedExtensions = []string{
