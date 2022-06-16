@@ -8,6 +8,7 @@ import (
 // Converter interface for image edit
 type Converter interface {
 	Resize(x, y int)
+	ResizeRatio(ratio float64)
 	Trim(left, right, bottom, top int)
 	ReverseX()
 	ReverseY()
@@ -29,6 +30,20 @@ func (c *converter) Resize(resizeX, resizeY int) {
 	dst := image.NewRGBA(image.Rect(0, 0, resizeX, resizeY))
 	dstSize := dst.Bounds().Size()
 	xRate, yRate := float64(c.Bounds().Dx())/float64(dstSize.X), float64(c.Bounds().Dy())/float64(dstSize.Y)
+	for x := 0; x < dstSize.X; x++ {
+		for y := 0; y < dstSize.Y; y++ {
+			srcX, srcY := int(math.Round(float64(x)*xRate)), int(math.Round(float64(y)*yRate))
+			dst.Set(x, y, c.Image.At(srcX, srcY))
+		}
+	}
+	c.Image = dst
+}
+
+// ResizeRatio resize the image with ratio
+func (c *converter) ResizeRatio(ratio float64) {
+	dst := image.NewRGBA(image.Rect(0, 0, int(math.Round(float64(c.Bounds().Dx())*ratio)), int(math.Round(float64(c.Bounds().Dy())*ratio))))
+	dstSize := dst.Bounds().Size()
+	xRate, yRate := 1/ratio, 1/ratio
 	for x := 0; x < dstSize.X; x++ {
 		for y := 0; y < dstSize.Y; y++ {
 			srcX, srcY := int(math.Round(float64(x)*xRate)), int(math.Round(float64(y)*yRate))

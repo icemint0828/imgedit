@@ -3,6 +3,7 @@ package imgedit
 import (
 	"image"
 	"image/png"
+	"math"
 	"os"
 	"reflect"
 	"testing"
@@ -94,6 +95,38 @@ func Test_converter_Resize(t *testing.T) {
 			img := c.Convert()
 			assert.Equal(t, img.Bounds().Dx(), tt.args.resizeX)
 			assert.Equal(t, img.Bounds().Dy(), tt.args.resizeX)
+			SaveTestImage(img)
+		})
+	}
+}
+
+func Test_converter_ResizeRatio(t *testing.T) {
+	type fields struct {
+		Image image.Image
+	}
+	type args struct {
+		ratio float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			name:   "normal",
+			fields: fields{Image: GetTestImage()},
+			args:   args{ratio: 0.3},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &converter{
+				Image: tt.fields.Image,
+			}
+			c.ResizeRatio(tt.args.ratio)
+			img := c.Convert()
+			assert.Equal(t, img.Bounds().Dx(), int(math.Round(float64(tt.fields.Image.Bounds().Dx())*tt.args.ratio)))
+			assert.Equal(t, img.Bounds().Dy(), int(math.Round(float64(tt.fields.Image.Bounds().Dy())*tt.args.ratio)))
 			SaveTestImage(img)
 		})
 	}

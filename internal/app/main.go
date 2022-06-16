@@ -55,9 +55,14 @@ func (a *App) Run() error {
 			c.ReverseX()
 		}
 	case SubCommandResize.Name:
+		ratio := flag.Lookup(OptionRatio.Name).Value.(flag.Getter).Get().(float64)
 		width, _ := strconv.Atoi(flag.Lookup(OptionWidth.Name).Value.String())
 		height, _ := strconv.Atoi(flag.Lookup(OptionHeight.Name).Value.String())
-		c.Resize(width, height)
+		if ratio != 0 {
+			c.ResizeRatio(ratio)
+		} else {
+			c.Resize(width, height)
+		}
 	case SubCommandTrim.Name:
 		left, _ := strconv.Atoi(flag.Lookup(OptionLeft.Name).Value.String())
 		right, _ := strconv.Atoi(flag.Lookup(OptionRight.Name).Value.String())

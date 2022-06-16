@@ -19,6 +19,7 @@ func main() {
 	flag.Bool(app.OptionVertical.Name, false, app.OptionVertical.Usage)
 	flag.Uint(app.OptionWidth.Name, 100, app.OptionWidth.Usage)
 	flag.Uint(app.OptionHeight.Name, 100, app.OptionHeight.Usage)
+	flag.Float64(app.OptionRatio.Name, 0, app.OptionRatio.Usage)
 	flag.Uint(app.OptionLeft.Name, 0, app.OptionLeft.Usage)
 	flag.Uint(app.OptionRight.Name, 100, app.OptionRight.Usage)
 	flag.Uint(app.OptionBottom.Name, 0, app.OptionBottom.Usage)
@@ -117,7 +118,7 @@ func permuteArgs(args []string) {
 		if v[0] == '-' {
 			optionName := v[1:]
 			switch optionName {
-			case app.OptionHeight.Name, app.OptionWidth.Name, app.OptionLeft.Name, app.OptionRight.Name, app.OptionBottom.Name, app.OptionTop.Name:
+			case app.OptionHeight.Name, app.OptionWidth.Name, app.OptionRatio.Name, app.OptionLeft.Name, app.OptionRight.Name, app.OptionBottom.Name, app.OptionTop.Name:
 				/* out of index */
 				if len(args) <= i+1 {
 					usage()
