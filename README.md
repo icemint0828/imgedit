@@ -1,6 +1,6 @@
-<div style="text-align: center">
-  <a href="https://github.com/icemint0828/imgedit/assets/image/logo.png">
-    <img alt="imgedit" src="assets/image/logo.png">
+<div align="center">
+  <a href="https://github.com/icemint0828/imgedit/blob/main/assets/image/logo.png?raw=true">
+    <img alt="imgedit" src="assets/image/logo.png" style="width:60%">
   </a>
 </div>
 
