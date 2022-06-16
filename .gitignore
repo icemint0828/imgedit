@@ -1,0 +1,12 @@
+# editer
+.idea/
+
+# config golangci-lint
+.golangci-lint.yaml
+
+# golang
+.DS_Store
+
+# output test files
+assets/output/*
+!.gitkeep
