@@ -5,6 +5,7 @@ import (
 	"math"
 )
 
+// Converter interface for image edit
 type Converter interface {
 	Resize(x, y int)
 	Trim(left, right, bottom, top int)
@@ -51,7 +52,7 @@ func (c *converter) Trim(left, right, bottom, top int) {
 	c.Image = dst
 }
 
-// ReverseX Reverse the image about x-axis
+// ReverseX reverse the image about horizon
 func (c *converter) ReverseX() {
 	dst := image.NewRGBA(image.Rect(0, 0, c.Bounds().Dx(), c.Bounds().Dy()))
 	srcSize := c.Bounds().Size()
@@ -65,7 +66,7 @@ func (c *converter) ReverseX() {
 	c.Image = dst
 }
 
-// ReverseY Reverse the image about y-axis
+// ReverseY reverse the image about vertical
 func (c *converter) ReverseY() {
 	dst := image.NewRGBA(image.Rect(0, 0, c.Bounds().Dx(), c.Bounds().Dy()))
 	srcSize := c.Bounds().Size()
@@ -79,6 +80,7 @@ func (c *converter) ReverseY() {
 	c.Image = dst
 }
 
+// Grayscale change the image color to grayscale
 func (c *converter) Grayscale() {
 	dst := image.NewGray(c.Bounds())
 	dstSize := dst.Bounds().Size()

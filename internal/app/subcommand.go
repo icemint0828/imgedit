@@ -39,6 +39,7 @@ var SubCommandGrayscale = &SubCommand{
 	OptionalOptions: []*Option{},
 }
 
+// SubCommand imgedit subcommand
 type SubCommand struct {
 	Name            string
 	Usage           string
@@ -54,11 +55,13 @@ var OptionRight = &Option{Name: "right", Usage: "right for trim. default 100px."
 var OptionBottom = &Option{Name: "bottom", Usage: "bottom for trim. default 0px."}
 var OptionTop = &Option{Name: "top", Usage: "top for trim. default 100px."}
 
+// Option for subcommands
 type Option struct {
 	Name  string
 	Usage string
 }
 
+// ValidOption check the validity of options
 func (s *SubCommand) ValidOption() bool {
 	var requiredCount int
 	var optional = true

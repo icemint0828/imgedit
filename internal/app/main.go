@@ -29,6 +29,7 @@ type App struct {
 	FilePath string
 }
 
+// NewApp create app
 func NewApp(subCommand *SubCommand, filepath string) *App {
 	return &App{
 		SubCommand: subCommand,
@@ -36,6 +37,7 @@ func NewApp(subCommand *SubCommand, filepath string) *App {
 	}
 }
 
+// Run edit the image
 func (a *App) Run() error {
 	// load image
 	loadImage, err := a.loadImage()
