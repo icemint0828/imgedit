@@ -1,23 +1,3 @@
-imgedit
-===============
-
-## Overview
-Imgedit is a package that performs image processing such as resizing and trimming.
-
-## Feature
-* resize
-* trim
-* reverse
-* grayscale
-
-## Supported Extensions
-* png
-* jpg, jpeg
-* gif
-
-## Usage
-
-``` go
 package main
 
 import (
@@ -28,7 +8,7 @@ import (
 )
 
 func main() {
-	srcFile, err := os.Open("src.png")
+	srcFile, err := os.Open("examples/src.png")
 	if err != nil {
 		panic(err)
 	}
@@ -42,7 +22,7 @@ func main() {
 	c.Resize(500, 500)
 	dstImage := c.Convert()
 
-	dstFile, err := os.Create("dst.png")
+	dstFile, err := os.Create("examples/dst.png")
 	if err != nil {
 		panic(err)
 	}
@@ -52,9 +32,3 @@ func main() {
 		panic(err)
 	}
 }
-```
-
-
-## License
-
-imgedit is under [MIT license](https://github.com/icemint0828/imgedit/blob/main/LICENSE).
