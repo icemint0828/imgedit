@@ -107,7 +107,7 @@ func (a *App) saveImage(img image.Image) error {
 	if err != nil {
 		return err
 	}
-	outputFileName := strings.Replace(filepath.Base(a.FilePath), ".", "_imgcov.", 1)
+	outputFileName := strings.Replace(filepath.Base(a.FilePath), ".", "_imgedit.", 1)
 	outputPath := path.Join(outputDir, outputFileName)
 	file, err := os.Create(outputPath)
 	if err != nil {
