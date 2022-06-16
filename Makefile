@@ -9,12 +9,16 @@ dev: check
 
 build: clean check
 	@mkdir -p $(EXEC_DIR)
+
+	@echo "[+] Copy license"
+	@cp LICENSE $(EXEC_DIR)LICENSE
+	@cp THIRD_PARTY_LICENCES $(EXEC_DIR)THIRD_PARTY_LICENCES
 	
 	@echo "[+] Building the Linux version"
 	@go build -ldflags "-s -w" -o $(EXEC_DIR)imgedit cmd/main.go
 
 	@echo "[+] Packaging the Linux version"
-	@zip -j $(EXEC_DIR)imgedit_Linux.zip $(EXEC_DIR)imgedit > /dev/null
+	@zip -j $(EXEC_DIR)imgedit_Linux.zip -r $(EXEC_DIR)imgedit $(EXEC_DIR)LICENSE $(EXEC_DIR)THIRD_PARTY_LICENCES > /dev/null
 
 	@echo "[+] Removing the Linux binary"
 	@rm $(EXEC_DIR)imgedit
@@ -24,7 +28,7 @@ build: clean check
 	@env GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o $(EXEC_DIR)imgedit.exe cmd/main.go
 
 	@echo "[+] Packaging the Windows version"
-	@zip -j $(EXEC_DIR)imgedit_Windows.zip $(EXEC_DIR)imgedit.exe > /dev/null
+	@zip -j $(EXEC_DIR)imgedit_Windows.zip -r $(EXEC_DIR)imgedit.exe $(EXEC_DIR)LICENSE $(EXEC_DIR)THIRD_PARTY_LICENCES > /dev/null
 
 	@echo "[+] Removing the Windows binary"
 	@rm $(EXEC_DIR)imgedit.exe
@@ -34,10 +38,13 @@ build: clean check
 	@env GOOS=darwin GOARCH=amd64 go build -ldflags "-s -w" -o $(EXEC_DIR)imgedit cmd/main.go
 
 	@echo "[+] Packaging the MacOS version"
-	@zip -j $(EXEC_DIR)imgedit_MacOS.zip $(EXEC_DIR)imgedit > /dev/null
+	@zip -j $(EXEC_DIR)imgedit_MacOS.zip -r $(EXEC_DIR)imgedit $(EXEC_DIR)LICENSE $(EXEC_DIR)THIRD_PARTY_LICENCES > /dev/null
 
 	@echo "[+] Removing the MacOS binary"
 	@rm $(EXEC_DIR)imgedit
+
+	@echo "[+] Removing license"
+	@rm $(EXEC_DIR)LICENSE $(EXEC_DIR)THIRD_PARTY_LICENCES
 
 	@echo "[+] Done"
 
