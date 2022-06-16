@@ -49,12 +49,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	if !Exists(imagePath) {
+	if !exists(imagePath) {
 		fmt.Printf("File does not exist : %s\n", imagePath)
 		os.Exit(1)
 	}
 
-	if !SupportedExtension(imagePath) {
+	if !supportedExtension(imagePath) {
 		fmt.Printf("Extension is not supported : %s\n", imagePath)
 		os.Exit(1)
 	}
@@ -67,12 +67,12 @@ func main() {
 	}
 }
 
-func Exists(filename string) bool {
+func exists(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil
 }
 
-func SupportedExtension(filename string) bool {
+func supportedExtension(filename string) bool {
 	e := filepath.Ext(filename)
 	for _, extension := range app.SupportedExtensions {
 		if strings.ToLower(e) == extension {
