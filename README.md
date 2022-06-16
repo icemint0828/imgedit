@@ -5,7 +5,7 @@ imgedit
 
 ## Overview
 Imgedit is a package that performs image processing such as resizing and trimming.  
-It,s also work on CLI.
+It's also work on CLI.
 
 ## Feature
 * resize
