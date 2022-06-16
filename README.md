@@ -21,6 +21,15 @@ It's also work on CLI.
 * reverse
 * grayscale
 
+| resize                                            | trim                                            | grayscale                                            |
+|---------------------------------------------------|-------------------------------------------------|------------------------------------------------------|
+| <img src="assets/image/resize.gif" width="200px"> | <img src="assets/image/trim.gif" width="200px"> | <img src="assets/image/grayscale.gif" width="200px"> |
+
+
+| reverse horizon                                      | reverse vertical                                     |
+|------------------------------------------------------|------------------------------------------------------|
+| <img src="assets/image/reverse-x.gif" width="200px"> | <img src="assets/image/reverse-y.gif" width="200px"> |
+
 ## Supported Extensions
 * png
 * jpg, jpeg
