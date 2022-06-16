@@ -8,5 +8,7 @@
 .DS_Store
 
 # output test files
-assets/output/*
+assets/image/dstImage.png
+examples/dstImage.png
+
 !.gitkeep

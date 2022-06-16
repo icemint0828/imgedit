@@ -11,12 +11,12 @@ import (
 )
 
 const (
-	ImagePath  = "assets/image/mint.png"
-	OutputPath = "assets/output/test.png"
+	SrcImagePath  = "assets/image/srcImage.png"
+	DstOutputPath = "assets/image/dstImage.png"
 )
 
 func GetTestImage() image.Image {
-	p, err := os.Open(ImagePath)
+	p, err := os.Open(SrcImagePath)
 	if err != nil {
 		panic(err)
 	}
@@ -30,7 +30,7 @@ func GetTestImage() image.Image {
 }
 
 func SaveTestImage(img image.Image) {
-	p, err := os.Create(OutputPath)
+	p, err := os.Create(DstOutputPath)
 	if err != nil {
 		panic(err)
 	}

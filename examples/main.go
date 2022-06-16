@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	srcFile, err := os.Open("examples/src.png")
+	srcFile, err := os.Open("examples/srcImage.png")
 	if err != nil {
 		panic(err)
 	}
@@ -22,7 +22,7 @@ func main() {
 	c.Resize(500, 500)
 	dstImage := c.Convert()
 
-	dstFile, err := os.Create("examples/dst.png")
+	dstFile, err := os.Create("examples/dstImage.png")
 	if err != nil {
 		panic(err)
 	}
