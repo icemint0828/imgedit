@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -32,40 +33,37 @@ func main() {
 	args := flag.Args()
 
 	if len(args) != 2 {
-		fmt.Println("Argument is missing.")
-		usage()
-		os.Exit(1)
+		exitOnError(errors.New("argument is missing"))
 	}
 	subCommandName, imagePath := args[0], args[1]
 	subCommand := app.SupportedSubCommands.FindSubCommand(subCommandName)
 	if subCommand == nil {
-		fmt.Printf("%s is not supported for subcommand.\n", subCommandName)
-		usage()
-		os.Exit(1)
+		exitOnError(errors.New(fmt.Sprintf("%s is not supported for subcommand", subCommandName)))
 	}
 
 	if !subCommand.ValidOption() {
-		fmt.Printf("%s is not valid for option.\n", subCommandName)
-		usage()
-		os.Exit(1)
+		exitOnError(errors.New(fmt.Sprintf("%s is not valid for option", subCommandName)))
 	}
 
 	if !exists(imagePath) {
-		fmt.Printf("File does not exist : %s\n", imagePath)
-		os.Exit(1)
+		exitOnError(errors.New(fmt.Sprintf("file does not exist : %s", imagePath)))
 	}
 
 	if !supportedExtension(imagePath) {
-		fmt.Printf("Extension is not supported : %s\n", imagePath)
-		os.Exit(1)
+		exitOnError(errors.New(fmt.Sprintf("extension is not supported : %s", imagePath)))
 	}
 
 	// run application
 	err := app.NewApp(subCommand, imagePath).Run()
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		exitOnError(err)
 	}
+}
+
+func exitOnError(err error) {
+	fmt.Println(err.Error())
+	fmt.Println("see: imgedit -help")
+	os.Exit(1)
 }
 
 func exists(filename string) bool {
@@ -100,13 +98,13 @@ func usage() {
 		if len(subCommand.OptionalOptions) == 0 {
 			continue
 		}
-		fmt.Printf("    [optional options]\n")
+		fmt.Printf("    (optional options)\n")
 		for _, option := range subCommand.OptionalOptions {
 			fmt.Printf("      -%s : %s\n", option.Name, option.Usage)
 		}
 	}
 	fmt.Printf("\n[supported extensions]\n")
-	fmt.Printf("%s\n", strings.Join(app.SupportedExtensions, "/"))
+	fmt.Printf("    %s\n", strings.Join(app.SupportedExtensions, "/"))
 }
 
 func permuteArgs(args []string) {
@@ -121,14 +119,12 @@ func permuteArgs(args []string) {
 			case app.OptionHeight.Name, app.OptionWidth.Name, app.OptionRatio.Name, app.OptionLeft.Name, app.OptionRight.Name, app.OptionBottom.Name, app.OptionTop.Name:
 				/* out of index */
 				if len(args) <= i+1 {
-					usage()
-					os.Exit(1)
+					exitOnError(errors.New(fmt.Sprintf("argument is missing for %s", v)))
 				}
 				/* the next flag has come */
 				optionVal := args[i+1]
 				if optionVal[0] == '-' {
-					usage()
-					os.Exit(1)
+					exitOnError(errors.New(fmt.Sprintf("argument is missing for %s", v)))
 				}
 				flagArgs = append(flagArgs, args[i:i+2]...)
 				i++
