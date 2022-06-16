@@ -1,10 +1,13 @@
 EXEC_DIR = execuatables/
 
-.PHONY: all build clean format test vet
+.PHONY: all build dev check clean format test vet
 all: build
 check: format vet test
 
-build: clean format vet test
+dev: check
+	@go build -o $$GOPATH/bin/imgedit ./cmd/main.go
+
+build: clean check
 	@mkdir -p $(EXEC_DIR)
 	
 	@echo "[+] Building the Linux version"
