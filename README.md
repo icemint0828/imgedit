@@ -2,7 +2,8 @@ imgedit
 ===============
 
 ## Overview
-Imgedit is a package that performs image processing such as resizing and trimming.
+Imgedit is a package that performs image processing such as resizing and trimming.  
+It,s also work on CLI.
 
 ## Feature
 * resize
@@ -15,7 +16,7 @@ Imgedit is a package that performs image processing such as resizing and trimmin
 * jpg, jpeg
 * gif
 
-## Usage
+## Usage(Package)
 
 ``` go
 package main
@@ -54,6 +55,22 @@ func main() {
 }
 ```
 
+## Usage(CLI)
+
+You can download the executable file from the link below.
+
+- ### [Windows](https://github.com/icemint0828/imgedit/releases/latest/download/imgedit_Windows.zip)
+
+- ### [Linux](https://github.com/icemint0828/imgedit/releases/latest/download/imgedit_Linux.zip)
+
+- ### [macOS](https://github.com/icemint0828/imgedit/releases/latest/download/imgedit_MacOS.zip)
+
+
+For more information on the executable file, please see the following command
+
+```shell
+imgedit -help
+```
 
 ## License
 
