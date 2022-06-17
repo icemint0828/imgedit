@@ -9,6 +9,7 @@ dev: check
 
 wasm: check
 	@GOOS=js GOARCH=wasm go build -o docs/main.wasm wasm/main.go
+	@#tinygo build -o docs/main.wasm -target wasm wasm/main.go
 
 build: clean check
 	@mkdir -p $(EXEC_DIR)

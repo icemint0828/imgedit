@@ -1,31 +1,39 @@
 <html lang="ja">
 <head>
+    <meta charset="UTF-8">
     <title>imgedit</title>
     <script src="wasm_exec.js"></script>
-    <script>
-        const go = new Go(); // Defined in wasm_exec.js
-        const WASM_URL = 'main.wasm';
-
-        let wasm;
-
-        if ('instantiateStreaming' in WebAssembly) {
-            WebAssembly.instantiateStreaming(fetch(WASM_URL), go.importObject).then(function (obj) {
-                wasm = obj.instance;
-                go.run(wasm);
-            })
-        } else {
-            fetch(WASM_URL).then(resp =>
-                resp.arrayBuffer()
-            ).then(bytes =>
-                WebAssembly.instantiate(bytes, go.importObject).then(function (obj) {
-                    wasm = obj.instance;
-                    go.run(wasm);
-                })
-            )
-        }
-    </script>
+    <script src="drop-zone.js"></script>
+    <script src="wasm.js"></script>
 </head>
 <body>
-test
+<div id="drop-zone" style="border: 1px solid; padding: 30px;">
+    <p>ファイルをドラッグ＆ドロップもしくは</p>
+    <input type="file" name="file" id="file-input" accept=".png, .jpg, .jpeg, .gif">
+</div>
+<h2>アップロードした画像</h2>
+<div id="preview"></div>
+
+<div id="error-message" style="color: crimson"></div>
+<div>
+    <button onClick="grayscale();" id="grayscaleButton" disabled>grayscale</button>
+</div>
+<script>
+    let preview = document.getElementById('preview')
+    let errorMessage = document.getElementById("error-message")
+
+    function previewBlob(blob) {
+        /* FileReaderで読み込み、プレビュー画像を表示。 */
+        let fr = new FileReader()
+        fr.readAsDataURL(new File([blob], "name", {lastModified: 0}))
+        fr.onload = function () {
+            let img = document.createElement('img')
+            img.setAttribute('src', fr.result)
+            preview.innerHTML = ''
+            preview.appendChild(img)
+            errorMessage.innerHTML = 'edit success'
+        };
+    }
+</script>
 </body>
 </html>
