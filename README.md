@@ -45,11 +45,6 @@ It's also work on CLI.
     </tr>
  </table>
 
-## Supported Extensions
-* png
-* jpg, jpeg
-* gif
-
 ## Usage(Package)
 
 ``` go
@@ -100,11 +95,16 @@ You can download the executable file from the link below.
 - ### [macOS](https://github.com/icemint0828/imgedit/releases/latest/download/imgedit_MacOS.zip)
 
 
-For more information on the executable file, please see the following command
+For more information on the executable file, please see the following command display
 
 ```shell
 imgedit -help
 ```
+
+## Supported Extensions(CLI)
+* png
+* jpg, jpeg
+* gif
 
 ## License
 
