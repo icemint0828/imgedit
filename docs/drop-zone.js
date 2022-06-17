@@ -25,7 +25,7 @@ window.onload = function() {
         e.preventDefault()
         this.style.background = '#ffffff' //背景色を白に戻す
         let files = e.dataTransfer.files //ドロップしたファイルを取得
-        if (files.length > 1) return alert('アップロードできるファイルは1つだけです。')
+        if (files.length > 1) return alert('you can only one file to upload ')
         fileInput.files = files //inputのvalueをドラッグしたファイルに置き換える。
         previewFile(files[0])
     }, false)
@@ -37,6 +37,7 @@ window.onload = function() {
         fr.onload = function() {
             let img = document.createElement('img')
             img.setAttribute('src', fr.result)
+            img.setAttribute('class', 'image')
             preview.innerHTML = ''
             preview.appendChild(img)
         }
