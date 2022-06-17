@@ -11,29 +11,30 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/icemint0828/imgedit"
 )
 
 var SupportedExtensions = []string{
-	".png",
-	".jpg",
-	".jpeg",
-	".gif",
+	"png",
+	"jpeg",
+	"gif",
 }
 
 type App struct {
-	*SubCommand
-	FilePath string
+	subCommand    *SubCommand
+	filePath      string
+	fileExtension string
+	convertFormat string
 }
 
 // NewApp create app
-func NewApp(subCommand *SubCommand, filepath string) *App {
+func NewApp(subCommand *SubCommand, filePath string) *App {
 	return &App{
-		SubCommand: subCommand,
-		FilePath:   filepath,
+		subCommand:    subCommand,
+		filePath:      filePath,
+		fileExtension: filepath.Ext(filePath),
 	}
 }
 
@@ -47,27 +48,25 @@ func (a *App) Run() error {
 
 	// convert image
 	c := imgedit.NewConverter(loadImage)
-	switch a.SubCommand.Name {
+	switch a.subCommand.Name {
 	case SubCommandReverse.Name:
-		if flag.Lookup(OptionVertical.Name).Value.String() == strconv.FormatBool(true) {
+		isVertical := flagBool(OptionVertical.Name)
+		if isVertical {
 			c.ReverseY()
 		} else {
 			c.ReverseX()
 		}
 	case SubCommandResize.Name:
-		ratio := flag.Lookup(OptionRatio.Name).Value.(flag.Getter).Get().(float64)
-		width, _ := strconv.Atoi(flag.Lookup(OptionWidth.Name).Value.String())
-		height, _ := strconv.Atoi(flag.Lookup(OptionHeight.Name).Value.String())
+		ratio := flagFloat64(OptionRatio.Name)
+		width, height := int(flagUint(OptionWidth.Name)), int(flagUint(OptionHeight.Name))
 		if ratio != 0 {
 			c.ResizeRatio(ratio)
 		} else {
 			c.Resize(width, height)
 		}
 	case SubCommandTrim.Name:
-		left, _ := strconv.Atoi(flag.Lookup(OptionLeft.Name).Value.String())
-		right, _ := strconv.Atoi(flag.Lookup(OptionRight.Name).Value.String())
-		bottom, _ := strconv.Atoi(flag.Lookup(OptionBottom.Name).Value.String())
-		top, _ := strconv.Atoi(flag.Lookup(OptionTop.Name).Value.String())
+		left, right := int(flagUint(OptionLeft.Name)), int(flagUint(OptionRight.Name))
+		bottom, top := int(flagUint(OptionBottom.Name)), int(flagUint(OptionTop.Name))
 		c.Trim(left, right, bottom, top)
 	case SubCommandGrayscale.Name:
 		c.Grayscale()
@@ -82,24 +81,35 @@ func (a *App) Run() error {
 	return nil
 }
 
+func flagUint(name string) uint {
+	return flag.Lookup(name).Value.(flag.Getter).Get().(uint)
+}
+
+func flagFloat64(name string) float64 {
+	return flag.Lookup(name).Value.(flag.Getter).Get().(float64)
+}
+
+func flagBool(name string) bool {
+	return flag.Lookup(name).Value.(flag.Getter).Get().(bool)
+}
+
 func (a *App) loadImage() (image.Image, error) {
-	file, err := os.Open(a.FilePath)
+	file, err := os.Open(a.filePath)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	e := filepath.Ext(a.FilePath)
-	switch strings.ToLower(e) {
-	case ".png":
-		return png.Decode(file)
-	case ".jpg", ".jpeg":
-		return jpeg.Decode(file)
-	case ".gif":
-		return gif.Decode(file)
-	default:
-		return nil, errors.New("extension is not supported")
+	img, format, err := image.Decode(file)
+	if err != nil {
+		return nil, err
 	}
+	if !supportedExtension(format) {
+		return nil, errors.New(fmt.Sprintf("extension is not supported : %s", format))
+	}
+
+	a.convertFormat = format
+	return img, err
 }
 
 func (a *App) saveImage(img image.Image) error {
@@ -107,7 +117,13 @@ func (a *App) saveImage(img image.Image) error {
 	if err != nil {
 		return err
 	}
-	outputFileName := strings.Replace(filepath.Base(a.FilePath), ".", "_imgedit.", 1)
+	var outputFileName string
+	if a.fileExtension == "" {
+		outputFileName = filepath.Base(a.filePath) + "_imgedit"
+	} else {
+		outputFileName = strings.Replace(filepath.Base(a.filePath), a.fileExtension, "_imgedit"+a.fileExtension, 1)
+	}
+
 	outputPath := path.Join(outputDir, outputFileName)
 	file, err := os.Create(outputPath)
 	if err != nil {
@@ -115,17 +131,25 @@ func (a *App) saveImage(img image.Image) error {
 	}
 	defer file.Close()
 
-	e := filepath.Ext(a.FilePath)
 	fmt.Printf("save convert file: %s\n", outputPath)
 
-	switch strings.ToLower(e) {
-	case ".png":
+	switch a.convertFormat {
+	case "png":
 		return png.Encode(file, img)
-	case ".jpg", ".jpeg":
+	case "jpeg":
 		return jpeg.Encode(file, img, &jpeg.Options{Quality: 100})
-	case ".gif":
+	case "gif":
 		return gif.Encode(file, img, &gif.Options{NumColors: 256})
 	default:
 		return errors.New("extension is not supported")
 	}
+}
+
+func supportedExtension(convertFormat string) bool {
+	for _, extension := range SupportedExtensions {
+		if extension == convertFormat {
+			return true
+		}
+	}
+	return false
 }

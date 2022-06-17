@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"path/filepath"
 	"strings"
 
 	"github.com/icemint0828/imgedit/internal/app"
@@ -49,10 +48,6 @@ func main() {
 		exitOnError(errors.New(fmt.Sprintf("file does not exist : %s", imagePath)))
 	}
 
-	if !supportedExtension(imagePath) {
-		exitOnError(errors.New(fmt.Sprintf("extension is not supported : %s", imagePath)))
-	}
-
 	// run application
 	err := app.NewApp(subCommand, imagePath).Run()
 	if err != nil {
@@ -69,16 +64,6 @@ func exitOnError(err error) {
 func exists(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil
-}
-
-func supportedExtension(filename string) bool {
-	e := filepath.Ext(filename)
-	for _, extension := range app.SupportedExtensions {
-		if strings.ToLower(e) == extension {
-			return true
-		}
-	}
-	return false
 }
 
 func usage() {
