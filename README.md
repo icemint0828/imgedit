@@ -4,7 +4,9 @@
   </a>
 </div>
 
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/icemint0828/imgedit)
 [![Go project version](https://badge.fury.io/go/github.com%2Ficemint0828%2Fimgedit.svg)](https://badge.fury.io/go/github.com%2Ficemint0828%2Fimgedit)
+[![Go Reference](https://pkg.go.dev/badge/github.com/icemint0828/imgedit.svg)](https://pkg.go.dev/github.com/icemint0828/imgedit)
 [![Go](https://github.com/icemint0828/imgedit/actions/workflows/go.yml/badge.svg)](https://github.com/icemint0828/imgedit/actions/workflows/go.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/icemint0828/imgedit)](https://goreportcard.com/report/github.com/icemint0828/imgedit)
 [![codecov](https://codecov.io/gh/icemint0828/imgedit/branch/main/graph/badge.svg?token=GI2WTY1V5O)](https://codecov.io/gh/icemint0828/imgedit)
