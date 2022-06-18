@@ -65,9 +65,9 @@ func (a *App) Run() error {
 			c.Resize(width, height)
 		}
 	case SubCommandTrim.Name:
-		left, right := int(flagUint(OptionLeft.Name)), int(flagUint(OptionRight.Name))
-		bottom, top := int(flagUint(OptionBottom.Name)), int(flagUint(OptionTop.Name))
-		c.Trim(left, right, bottom, top)
+		left, top := int(flagUint(OptionLeft.Name)), int(flagUint(OptionTop.Name))
+		width, height := int(flagUint(OptionWidth.Name)), int(flagUint(OptionHeight.Name))
+		c.Trim(left, top, width, height)
 	case SubCommandGrayscale.Name:
 		c.Grayscale()
 	}

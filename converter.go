@@ -9,7 +9,7 @@ import (
 type Converter interface {
 	Resize(x, y int)
 	ResizeRatio(ratio float64)
-	Trim(left, right, bottom, top int)
+	Trim(left, top, width, height int)
 	ReverseX()
 	ReverseY()
 	Grayscale()
@@ -54,13 +54,12 @@ func (c *converter) ResizeRatio(ratio float64) {
 }
 
 // Trim trim the image to the specified size
-func (c *converter) Trim(left, right, bottom, top int) {
-	dst := image.NewRGBA(image.Rect(0, 0, right-left, top-bottom))
-	srcSize := c.Bounds().Size()
+func (c *converter) Trim(left, top, width, height int) {
+	dst := image.NewRGBA(image.Rect(0, 0, width, height))
 	dstSize := dst.Bounds().Size()
 	for x := 0; x < dstSize.X; x++ {
 		for y := 0; y < dstSize.Y; y++ {
-			srcX, srcY := x+left, y+(srcSize.Y-top)
+			srcX, srcY := x+left, y+top
 			dst.Set(x, y, c.Image.At(srcX, srcY))
 		}
 	}

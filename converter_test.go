@@ -138,9 +138,9 @@ func Test_converter_Trim(t *testing.T) {
 	}
 	type args struct {
 		left   int
-		right  int
-		bottom int
 		top    int
+		width  int
+		height int
 	}
 	tests := []struct {
 		name   string
@@ -150,7 +150,7 @@ func Test_converter_Trim(t *testing.T) {
 		{
 			name:   "normal",
 			fields: fields{Image: GetTestImage()},
-			args:   args{750, 1250, 750, 1250},
+			args:   args{500, 500, 500, 500},
 		},
 	}
 	for _, tt := range tests {
@@ -158,10 +158,10 @@ func Test_converter_Trim(t *testing.T) {
 			c := &converter{
 				Image: tt.fields.Image,
 			}
-			c.Trim(tt.args.left, tt.args.right, tt.args.bottom, tt.args.top)
+			c.Trim(tt.args.left, tt.args.top, tt.args.width, tt.args.height)
 			img := c.Convert()
-			assert.Equal(t, img.Bounds().Dx(), tt.args.right-tt.args.left)
-			assert.Equal(t, img.Bounds().Dy(), tt.args.top-tt.args.bottom)
+			assert.Equal(t, img.Bounds().Dx(), tt.args.width)
+			assert.Equal(t, img.Bounds().Dy(), tt.args.height)
 			SaveTestImage(img)
 		})
 	}

@@ -28,8 +28,8 @@ var SubCommandResize = &SubCommand{
 var SubCommandTrim = &SubCommand{
 	Name:            "trim",
 	Usage:           "trim image",
-	RequiredOptions: []*Option{},
-	OptionalOptions: []*Option{OptionLeft, OptionRight, OptionBottom, OptionTop},
+	RequiredOptions: []*Option{OptionLeft, OptionTop, OptionWidth, OptionHeight},
+	OptionalOptions: []*Option{},
 }
 
 var SubCommandGrayscale = &SubCommand{
@@ -48,13 +48,11 @@ type SubCommand struct {
 }
 
 var OptionVertical = &Option{Name: "vertical", Usage: "direction for reverse. default horizon."}
-var OptionWidth = &Option{Name: "width", Usage: "width for resize. default 100px."}
-var OptionHeight = &Option{Name: "height", Usage: "height for resize. default 100px."}
+var OptionWidth = &Option{Name: "width", Usage: "width px."}
+var OptionHeight = &Option{Name: "height", Usage: "height px."}
 var OptionRatio = &Option{Name: "ratio", Usage: "ratio for resize. if ratio is set, width and height are ignored."}
-var OptionLeft = &Option{Name: "left", Usage: "left for trim. default 0px."}
-var OptionRight = &Option{Name: "right", Usage: "right for trim. default 100px."}
-var OptionBottom = &Option{Name: "bottom", Usage: "bottom for trim. default 0px."}
-var OptionTop = &Option{Name: "top", Usage: "top for trim. default 100px."}
+var OptionTop = &Option{Name: "top", Usage: "start top point px of trim."}
+var OptionLeft = &Option{Name: "left", Usage: "start left point px of trim."}
 
 // Option for subcommands
 type Option struct {

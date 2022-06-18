@@ -17,13 +17,11 @@ const (
 
 func main() {
 	flag.Bool(app.OptionVertical.Name, false, app.OptionVertical.Usage)
-	flag.Uint(app.OptionWidth.Name, 100, app.OptionWidth.Usage)
-	flag.Uint(app.OptionHeight.Name, 100, app.OptionHeight.Usage)
+	flag.Uint(app.OptionWidth.Name, 0, app.OptionWidth.Usage)
+	flag.Uint(app.OptionHeight.Name, 0, app.OptionHeight.Usage)
 	flag.Float64(app.OptionRatio.Name, 0, app.OptionRatio.Usage)
 	flag.Uint(app.OptionLeft.Name, 0, app.OptionLeft.Usage)
-	flag.Uint(app.OptionRight.Name, 100, app.OptionRight.Usage)
-	flag.Uint(app.OptionBottom.Name, 0, app.OptionBottom.Usage)
-	flag.Uint(app.OptionTop.Name, 100, app.OptionTop.Usage)
+	flag.Uint(app.OptionTop.Name, 0, app.OptionTop.Usage)
 	flag.CommandLine.Usage = usage
 	permuteArgs(os.Args[1:])
 	flag.Parse()
@@ -76,16 +74,17 @@ func usage() {
 	fmt.Printf("[sub command]\n")
 	for _, subCommand := range app.SupportedSubCommands {
 		fmt.Printf("\n  %s : %s\n", subCommand.Name, subCommand.Usage)
-		//fmt.Printf("    [required options]\n")
-		//for _, option := range subCommand.RequiredOptions {
-		//	fmt.Printf("      -%s : %s\n", option.Name, option.Usage)
-		//}
-		if len(subCommand.OptionalOptions) == 0 {
-			continue
+		if len(subCommand.RequiredOptions) > 0 {
+			fmt.Printf("    (required options)\n")
+			for _, option := range subCommand.RequiredOptions {
+				fmt.Printf("      -%s : %s\n", option.Name, option.Usage)
+			}
 		}
-		fmt.Printf("    (optional options)\n")
-		for _, option := range subCommand.OptionalOptions {
-			fmt.Printf("      -%s : %s\n", option.Name, option.Usage)
+		if len(subCommand.OptionalOptions) > 0 {
+			fmt.Printf("    (optional options)\n")
+			for _, option := range subCommand.OptionalOptions {
+				fmt.Printf("      -%s : %s\n", option.Name, option.Usage)
+			}
 		}
 	}
 	fmt.Printf("\n[supported extensions]\n")
@@ -101,7 +100,7 @@ func permuteArgs(args []string) {
 		if v[0] == '-' {
 			optionName := v[1:]
 			switch optionName {
-			case app.OptionHeight.Name, app.OptionWidth.Name, app.OptionRatio.Name, app.OptionLeft.Name, app.OptionRight.Name, app.OptionBottom.Name, app.OptionTop.Name:
+			case app.OptionHeight.Name, app.OptionWidth.Name, app.OptionRatio.Name, app.OptionLeft.Name, app.OptionTop.Name:
 				/* out of index */
 				if len(args) <= i+1 {
 					exitOnError(errors.New(fmt.Sprintf("argument is missing for %s", v)))
