@@ -1,7 +1,9 @@
-<div align="center">
-  <a href="https://github.com/icemint0828/imgedit/blob/main/assets/image/logo.png?raw=true">
-    <img alt="imgedit" src="assets/image/logo.png" style="width:60%">
-  </a>
+<div style="text-align: center; width: 100%;">
+    <div>
+        <a href="https://github.com/icemint0828/imgedit/blob/main/assets/image/logo.png?raw=true">
+            <img alt="imgedit" src="assets/image/logo.png" style="width:60%">
+        </a>
+    </div>
 </div>
 
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/icemint0828/imgedit)
@@ -13,10 +15,12 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
+
 Imgedit is a package that performs image processing such as resizing and trimming.  
 It's also work on CLI.
 
 ## Feature
+
 * resize
 * trim
 * reverse
@@ -29,9 +33,9 @@ It's also work on CLI.
       <td>grayscale</td>
     </tr>
     <tr>
-      <td><img src="assets/image/resize.gif"></td>
-      <td><img src="assets/image/trim.gif"></td>
-      <td><img src="assets/image/grayscale.gif"> </td>
+      <td><img alt="resize" src="assets/image/resize.gif"></td>
+      <td><img alt="trim" src="assets/image/trim.gif"></td>
+      <td><img alt="grayscale" src="assets/image/grayscale.gif"> </td>
     </tr>
     <tr>
       <td>reverse horizon </td>
@@ -39,8 +43,8 @@ It's also work on CLI.
       <td></td>
     </tr>
     <tr>
-      <td><img src="assets/image/reverse-x.gif" width="200px"></td>
-      <td><img src="assets/image/reverse-y.gif" width="200px"></td>
+      <td><img alt="reverse-x" src="assets/image/reverse-x.gif"></td>
+      <td><img alt="reverse-y" src="assets/image/reverse-y.gif"></td>
       <td></td>
     </tr>
  </table>
@@ -94,7 +98,6 @@ You can download the executable file from the link below.
 
 - ### [macOS](https://github.com/icemint0828/imgedit/releases/latest/download/imgedit_MacOS.zip)
 
-
 For more information on the executable file, please see the following command display
 
 ```shell
@@ -102,9 +105,16 @@ imgedit -help
 ```
 
 ## Supported Extensions(CLI)
+
 * png
 * jpg, jpeg
 * gif
+
+## Usage(GUI)
+
+You can also use a sample GUI tool that created with wasm by this package.
+
+- ### [image edit tools](https://icemint0828.github.io/imgedit-wasm/)
 
 ## License
 
