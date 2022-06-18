@@ -1,9 +1,6 @@
-<div style="text-align: center; width: 100%;">
-    <div>
-        <a href="https://github.com/icemint0828/imgedit/blob/main/assets/image/logo.png?raw=true">
-            <img alt="imgedit" src="assets/image/logo.png" style="width:60%">
-        </a>
-    </div>
+
+<div align="center" style="width: 100%;">
+	<img alt="imgedit" src="assets/image/logo.png" style="width:60%;">
 </div>
 
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/icemint0828/imgedit)
