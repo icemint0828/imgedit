@@ -12,12 +12,27 @@ import (
 )
 
 const (
-	SrcImagePath  = "assets/image/srcImage.png"
-	DstOutputPath = "assets/image/dstImage.png"
+	SrcImagePath   = "assets/image/srcImage.png"
+	AlphaImagePath = "assets/image/alphaImage.png"
+	DstOutputPath  = "assets/image/dstImage.png"
 )
 
 func GetTestImage() image.Image {
 	p, err := os.Open(SrcImagePath)
+	if err != nil {
+		panic(err)
+	}
+	defer p.Close()
+
+	img, err := png.Decode(p)
+	if err != nil {
+		panic(err)
+	}
+	return img
+}
+
+func GetAlphaImage() image.Image {
+	p, err := os.Open(AlphaImagePath)
 	if err != nil {
 		panic(err)
 	}
@@ -115,6 +130,11 @@ func Test_converter_ResizeRatio(t *testing.T) {
 		{
 			name:   "normal",
 			fields: fields{Image: GetTestImage()},
+			args:   args{ratio: 0.3},
+		},
+		{
+			name:   "alpha",
+			fields: fields{Image: GetAlphaImage()},
 			args:   args{ratio: 0.3},
 		},
 	}
@@ -232,6 +252,10 @@ func Test_converter_Grayscale(t *testing.T) {
 		{
 			name:   "normal",
 			fields: fields{Image: GetTestImage()},
+		},
+		{
+			name:   "alpha",
+			fields: fields{Image: GetAlphaImage()},
 		},
 	}
 	for _, tt := range tests {

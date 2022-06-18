@@ -2,6 +2,7 @@ package imgedit
 
 import (
 	"image"
+	"image/color"
 	"math"
 )
 
@@ -96,11 +97,19 @@ func (c *converter) ReverseY() {
 
 // Grayscale change the image color to grayscale
 func (c *converter) Grayscale() {
-	dst := image.NewGray(c.Bounds())
+	dst := image.NewRGBA(image.Rect(0, 0, c.Bounds().Dx(), c.Bounds().Dy()))
 	dstSize := dst.Bounds().Size()
+	grayModel := color.GrayModel
+	alphaModel := color.AlphaModel
 	for x := 0; x < dstSize.X; x++ {
 		for y := 0; y < dstSize.Y; y++ {
-			dst.Set(x, y, c.Image.At(x, y))
+			dstColor := c.Image.At(x, y)
+			_, _, _, a := dstColor.RGBA()
+			if a <= 0 {
+				dst.Set(x, y, alphaModel.Convert(dstColor))
+			} else {
+				dst.Set(x, y, grayModel.Convert(dstColor))
+			}
 		}
 	}
 	c.Image = dst
