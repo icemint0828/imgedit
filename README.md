@@ -62,7 +62,7 @@ import (
 )
 
 func main() {
-	c, _ := imgedit.NewFileConverter("srcImage.png")
+	c, _, _ := imgedit.NewFileConverter("srcImage.png")
 	c.Grayscale()
 	_ = c.SaveAs("dstImage.png", imgedit.Png)
 }

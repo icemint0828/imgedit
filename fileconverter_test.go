@@ -10,39 +10,46 @@ func TestNewFileConverter(t *testing.T) {
 		srcPath string
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    FileConverter
-		wantErr bool
+		name          string
+		args          args
+		want          FileConverter
+		wantExtension Extension
+		wantErr       bool
 	}{
 		{
-			name:    "normal",
-			args:    args{srcPath: SrcPngImagePath},
-			want:    &fileConverter{converter: &converter{Image: GetPngImage()}},
-			wantErr: false,
+			name:          "normal",
+			args:          args{srcPath: SrcPngImagePath},
+			want:          &fileConverter{converter: &converter{Image: GetPngImage()}},
+			wantExtension: Png,
+			wantErr:       false,
 		},
 		{
-			name:    "missing file",
-			args:    args{srcPath: MissingImagePath},
-			want:    nil,
-			wantErr: true,
+			name:          "missing file",
+			args:          args{srcPath: MissingImagePath},
+			want:          nil,
+			wantExtension: "",
+			wantErr:       true,
 		},
 		{
-			name:    "wong extension",
-			args:    args{srcPath: WongExtensionPath},
-			want:    nil,
-			wantErr: true,
+			name:          "wong extension",
+			args:          args{srcPath: WongExtensionPath},
+			want:          nil,
+			wantExtension: "",
+			wantErr:       true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewFileConverter(tt.args.srcPath)
+			got, extension, err := NewFileConverter(tt.args.srcPath)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewFileConverter() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewFileConverter() got = %v, want %v", got, tt.want)
+			}
+			if !reflect.DeepEqual(extension, tt.wantExtension) {
+				t.Errorf("NewFileConverter() extension = %v, wantExtension %v", got, tt.want)
 			}
 		})
 	}
@@ -171,7 +178,7 @@ func TestSupportedExtension(t *testing.T) {
 }
 
 func TestFileEdit(t *testing.T) {
-	c, _ := NewFileConverter(SrcPngImagePath)
+	c, _, _ := NewFileConverter(SrcPngImagePath)
 	c.Grayscale()
 	_ = c.SaveAs(DstPngImagePath, Png)
 }

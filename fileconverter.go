@@ -50,20 +50,21 @@ type fileConverter struct {
 }
 
 // NewFileConverter create fileConverter
-func NewFileConverter(srcPath string) (FileConverter, error) {
+func NewFileConverter(srcPath string) (FileConverter, Extension, error) {
 	srcFile, err := os.Open(srcPath)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	srcImage, format, err := image.Decode(srcFile)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	// all formats are supported.
-	if !SupportedExtension(Extension(format)) {
-		return nil, errors.New(fmt.Sprintf("extension is not supported : %s", format))
+	extension := Extension(format)
+	if !SupportedExtension(extension) {
+		return nil, "", errors.New(fmt.Sprintf("extension is not supported : %s", format))
 	}
-	return &fileConverter{converter: &converter{srcImage}}, nil
+	return &fileConverter{converter: &converter{srcImage}}, extension, nil
 }
 
 func (p *fileConverter) SaveAs(dstPath string, extension Extension) error {
