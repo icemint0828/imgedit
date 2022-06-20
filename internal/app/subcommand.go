@@ -9,6 +9,30 @@ var SupportedSubCommands = SubCommands{
 	SubCommandResize,
 	SubCommandTrim,
 	SubCommandGrayscale,
+	SubCommandPng,
+	SubCommandJpeg,
+	SubCommandGif,
+}
+
+var SubCommandPng = &SubCommand{
+	Name:            "png",
+	Usage:           "file convert to png",
+	RequiredOptions: []*Option{},
+	OptionalOptions: []*Option{},
+}
+
+var SubCommandJpeg = &SubCommand{
+	Name:            "jpeg",
+	Usage:           "file convert to jpeg",
+	RequiredOptions: []*Option{},
+	OptionalOptions: []*Option{},
+}
+
+var SubCommandGif = &SubCommand{
+	Name:            "gif",
+	Usage:           "file convert to gif",
+	RequiredOptions: []*Option{},
+	OptionalOptions: []*Option{},
 }
 
 var SubCommandReverse = &SubCommand{

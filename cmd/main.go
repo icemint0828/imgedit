@@ -8,6 +8,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/icemint0828/imgedit"
 	"github.com/icemint0828/imgedit/internal/app"
 )
 
@@ -88,7 +89,11 @@ func usage() {
 		}
 	}
 	fmt.Printf("\n[supported extensions]\n")
-	fmt.Printf("    %s\n", strings.Join(app.SupportedExtensions, "/"))
+	var supportedExtensions []string
+	for _, e := range imgedit.SupportedExtensions {
+		supportedExtensions = append(supportedExtensions, string(e))
+	}
+	fmt.Printf("    %s\n", strings.Join(supportedExtensions, "/"))
 }
 
 func permuteArgs(args []string) {
