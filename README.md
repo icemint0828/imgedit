@@ -23,7 +23,7 @@ It's also work on CLI.
 * trim
 * reverse
 * grayscale
-* nteractive file conversion(png, jpeg, gif)
+* interactive file conversion(png, jpeg, gif)
 
  <table>
     <tr>
