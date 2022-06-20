@@ -145,6 +145,12 @@ You can also use a sample GUI tool that created with wasm by this package.
 
 * Transparency processing in gif images is not working well.
 
+## Contributing
+This project is currently not very open and is being developed by internal members.  
+We are sorry, but please understand.
+* For issues, we only accept reports of problems.
+* For PR, we do not accept all of them.
+
 ## License
 
 imgedit is under [MIT license](https://github.com/icemint0828/imgedit/blob/main/LICENSE).
