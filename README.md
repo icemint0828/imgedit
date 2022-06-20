@@ -49,6 +49,27 @@ It's also work on CLI.
 
 ## Usage(Package)
 
+An example with file conversion is as follows.
+
+``` go
+package main
+
+import (
+	"image/png"
+	"os"
+
+	"github.com/icemint0828/imgedit"
+)
+
+func main() {
+	c, _ := imgedit.NewFileConverter("srcImage.png")
+	c.Grayscale()
+	_ = c.SaveAs("dstImage.png", imgedit.Png)
+}
+```
+
+It can also work with just convert image.
+
 ``` go
 package main
 
