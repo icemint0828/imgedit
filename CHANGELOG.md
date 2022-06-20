@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 1.2.0 - 2022-06-20
+* Add file converter.
+
 ## Version 1.1.0 - 2022-06-18
 * Change resize args(This is a disruptive change).
 * Fix to handle alpha in grayscale.

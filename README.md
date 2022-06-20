@@ -62,9 +62,15 @@ import (
 )
 
 func main() {
-	c, _, _ := imgedit.NewFileConverter("srcImage.png")
-	c.Grayscale()
-	_ = c.SaveAs("dstImage.png", imgedit.Png)
+	fc, _, err := imgedit.NewFileConverter("srcImage.png")
+	if err != nil {
+		panic(err)
+	}
+	fc.Grayscale()
+	err = fc.SaveAs("dstImage.png", imgedit.Png)
+	if err != nil {
+		panic(err)
+	}
 }
 ```
 
