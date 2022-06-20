@@ -135,6 +135,10 @@ You can also use a sample GUI tool that created with wasm by this package.
 
 - ### [image edit tools](https://icemint0828.github.io/imgedit-wasm/)
 
+## Known Defects
+
+* Transparency processing in gif images is not working well.
+
 ## License
 
 imgedit is under [MIT license](https://github.com/icemint0828/imgedit/blob/main/LICENSE).
