@@ -12,6 +12,8 @@ execuatables/
 
 # output test files
 assets/image/dstImage.png
+assets/image/dstImage.jpeg
+assets/image/dstImage.gif
 examples/dstImage.png
 
 !.gitkeep
