@@ -13,7 +13,7 @@
 
 ## Overview
 
-`Imgedit` is a package that performs image processing such as resizing and trimming available on both VLI and GUI.
+`Imgedit` is a package that performs image processing such as resizing and trimming available on both CLI and [GUI](#usage-gui).
 
 ## Features
 
@@ -133,9 +133,9 @@ imgedit -help
 
 ## Usage (GUI)
 
-You can also use a sample GUI tool that is created with `WASM` by this package.
+You can also use a [sample GUI tool](https://github.com/icemint0828/imgedit-wasm) that is created with `WASM` by this package.
 
-- ### [image edit tools](https://icemint0828.github.io/imgedit-wasm/)
+- ### Check out the [image edit tool](https://icemint0828.github.io/imgedit-wasm/)
 
 ## Known Limitations
 
