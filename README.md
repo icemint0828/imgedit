@@ -1,6 +1,5 @@
-
 <div align="center" style="width: 100%;">
-	<img alt="imgedit" src="assets/image/logo.png" style="width:60%;">
+ <img alt="imgedit" src="assets/image/logo.png" style="width:60%;">
 </div>
 
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/icemint0828/imgedit)
@@ -14,16 +13,15 @@
 
 ## Overview
 
-Imgedit is a package that performs image processing such as resizing and trimming.  
-It's also work on CLI.
+`Imgedit` is a package that performs image processing such as resizing and trimming available on both CLI and [GUI](#usage-gui).
 
-## Feature
+## Features
 
-* resize
-* trim
-* reverse
-* grayscale
-* interactive file conversion(png, jpeg, gif)
+- resize
+- trim
+- reverse
+- grayscale
+- interactive file format conversion (`png`, `jpeg`, `gif`)
 
  <table>
     <tr>
@@ -48,73 +46,70 @@ It's also work on CLI.
     </tr>
  </table>
 
-## Usage(Package)
+## Usage (Package)
 
 An example with file conversion is as follows.
 
-``` go
+```go
 package main
 
 import (
-	"image/png"
-	"os"
-
-	"github.com/icemint0828/imgedit"
+    "github.com/icemint0828/imgedit"
 )
 
 func main() {
-	fc, _, err := imgedit.NewFileConverter("srcImage.png")
-	if err != nil {
-		panic(err)
-	}
-	fc.Grayscale()
-	err = fc.SaveAs("dstImage.png", imgedit.Png)
-	if err != nil {
-		panic(err)
-	}
+    fc, _, err := imgedit.NewFileConverter("srcImage.png")
+    if err != nil {
+        panic(err)
+    }
+    fc.Grayscale()
+    err = fc.SaveAs("dstImage.png", imgedit.Png)
+    if err != nil {
+        panic(err)
+    }
 }
 ```
 
 It can also work with just convert image.
 
-``` go
+```go
 package main
 
 import (
-	"image/png"
-	"os"
+    "image/png"
+    "os"
 
-	"github.com/icemint0828/imgedit"
+    "github.com/icemint0828/imgedit"
 )
 
 func main() {
-	srcFile, err := os.Open("srcImage.png")
-	if err != nil {
-		panic(err)
-	}
-	defer srcFile.Close()
-	srcImage, err := png.Decode(srcFile)
-	if err != nil {
-		panic(err)
-	}
+    srcFile, err := os.Open("srcImage.png")
+    if err != nil {
+        panic(err)
+    }
+    defer srcFile.Close()
+    srcImage, err := png.Decode(srcFile)
+    if err != nil {
+        panic(err)
+    }
 
-	c := imgedit.NewConverter(srcImage)
-	c.Resize(500, 500)
-	dstImage := c.Convert()
+    c := imgedit.NewConverter(srcImage)
+    c.Resize(500, 500)
+    dstImage := c.Convert()
 
-	dstFile, err := os.Create("dstImage.png")
-	if err != nil {
-		panic(err)
-	}
-	defer dstFile.Close()
-	err = png.Encode(dstFile, dstImage)
-	if err != nil {
-		panic(err)
-	}
+    dstFile, err := os.Create("dstImage.png")
+    if err != nil {
+        panic(err)
+    }
+    defer dstFile.Close()
+    err = png.Encode(dstFile, dstImage)
+    if err != nil {
+        panic(err)
+    }
 }
 ```
 
-## Usage(CLI)
+## Usage (CLI)
 
 You can download the executable file from the link below.
 
@@ -122,36 +117,36 @@ You can download the executable file from the link below.
 
 - ### [Linux](https://github.com/icemint0828/imgedit/releases/latest/download/imgedit_Linux.zip)
 
-- ### [macOS](https://github.com/icemint0828/imgedit/releases/latest/download/imgedit_MacOS.zip)
+- ### [mac OS](https://github.com/icemint0828/imgedit/releases/latest/download/imgedit_MacOS.zip)
 
-For more information on the executable file, please see the following command display
+For more information, please use the help command:
 
 ```shell
 imgedit -help
 ```
 
-## Supported Extensions(CLI)
+## Supported Formats (CLI)
 
-* png
-* jpg, jpeg
-* gif
+- png
+- jpg, jpeg
+- gif
 
-## Usage(GUI)
+## Usage (GUI)
 
-You can also use a sample GUI tool that created with wasm by this package.
+You can also use a [sample GUI tool](https://github.com/icemint0828/imgedit-wasm) that is created with `WASM` by this package.
 
-- ### [image edit tools](https://icemint0828.github.io/imgedit-wasm/)
+- ### Check out the [image edit tool](https://icemint0828.github.io/imgedit-wasm/)
 
-## Known Defects
+## Known Limitations
 
-* Transparency processing in gif images is not working well.
+- Transparency processing in `gif` files is not working well yet.
 
 ## Contributing
-This project is currently not very open and is being developed by internal members.  
-We are sorry, but please understand.
-* For issues, we only accept reports of problems.
-* For PR, we do not accept all of them.
+
+This project is currently at early stages and is being developed by internal members.
+
+- Report your issues through [GitHub issues](https://github.com/icemint0828/imgedit/issues).
 
 ## License
 
-imgedit is under [MIT license](https://github.com/icemint0828/imgedit/blob/main/LICENSE).
+`imgedit` is under [MIT license](https://github.com/icemint0828/imgedit/blob/main/LICENSE).
