@@ -1,7 +1,53 @@
----------------------------------
+---------------------------------------------------------------------------------------------------
+07 ラノベPOP
+
+http://www.fontna.com/blog/1706/
+
+Copyright (C) 2002-2015 M+ FONTS PROJECT
+Copyright (C) 2015 Fontna.com
+Copyright (C) 2015 Kato Masashi
+
+このフォントのライセンスは、
+M+のライセンスに準じます。
+
+M+のライセンスは、配布物に含まれる
+「mplus-TESTFLIGHT-059」フォルダ内の書類をご覧ください。
+
+---------------------------------------------------------------------------------------------------
+07 ロゴたいぷゴシック
+
+http://www.fontna.com/tag/%E3%83%AD%E3%82%B4%E3%82%BF%E3%82%A4%E3%83%97%E3%82%B4%E3%82%B7%E3%83%83%E3%82%AF/
+
+Copyright (C) 2002-2014 M+ FONTS PROJECT
+Copyright (C) 2014 Fontna.com
+Copyright (C) 2014 Kato Masashi
+
+このフォントのライセンスは、
+M+のライセンスに準じます。
+
+M+のライセンスは、配布物に含まれる
+「mplus-TESTFLIGHT-058」フォルダ内の書類をご覧ください。
+---------------------------------------------------------------------------------------------------
+M+ FONTS                                Copyright (C) 2002-2014 M+ FONTS PROJECT
+
+-
+
+LICENSE_E
+
+
+
+
+These fonts are free software.
+Unlimited permission is granted to use, copy, and distribute them, with
+or without modification, either commercially or noncommercially.
+THESE FONTS ARE PROVIDED "AS IS" WITHOUT WARRANTY.
+
+
+http://mplus-fonts.sourceforge.jp/mplus-outline-fonts/
+---------------------------------------------------------------------------------------------------
 magiconair/properties
 
-Source:https://github.com/magiconair/properties
+https://github.com/magiconair/properties
 
 BSD 2-Clause "Simplified" License
 
@@ -13,4 +59,15 @@ Redistribution and use in source and binary forms, with or without modification,
 ・Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 ・Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
----------------------------------
+---------------------------------------------------------------------------------------------------
+golang/freetype
+
+https://github.com/golang/freetype
+
+FreeType License
+
+The FreeType  Project is copyright (C) 1996-2000  by David Turner,
+Robert Wilhelm, and Werner Lemberg.
+
+http://freetype.sourceforge.net/FTL.TXT
+---------------------------------------------------------------------------------------------------
