@@ -32,7 +32,7 @@ func TestNewFileConverter(t *testing.T) {
 		},
 		{
 			name:          "wong extension",
-			args:          args{srcPath: WongExtensionPath},
+			args:          args{srcPath: WrongExtensionPath},
 			want:          nil,
 			wantExtension: "",
 			wantErr:       true,

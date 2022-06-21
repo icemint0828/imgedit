@@ -1,6 +1,7 @@
 package imgedit
 
 import (
+	"github.com/golang/freetype/truetype"
 	"image"
 	"image/gif"
 	"image/jpeg"
@@ -14,16 +15,17 @@ import (
 )
 
 const (
-	MissingImagePath  = "assets/image/missingFile"
-	WongExtensionPath = "assets/image/wongExtension.txt"
-	MissingDirPath    = "assets/image/missingDir/missingFile"
-	SrcGifImagePath   = "assets/image/srcImage.gif"
-	SrcJpegImagePath  = "assets/image/srcImage.jpeg"
-	SrcPngImagePath   = "assets/image/srcImage.png"
-	AlphaImagePath    = "assets/image/alphaImage.png"
-	DstPngImagePath   = "assets/image/dstImage.png"
-	DstJpegImagePath  = "assets/image/dstImage.jpeg"
-	DstGifImagePath   = "assets/image/dstImage.gif"
+	MissingImagePath   = "assets/image/missingFile"
+	WrongExtensionPath = "assets/image/wrongExtension.txt"
+	MissingDirPath     = "assets/image/missingDir/missingFile"
+	SrcGifImagePath    = "assets/image/srcImage.gif"
+	SrcJpegImagePath   = "assets/image/srcImage.jpeg"
+	SrcPngImagePath    = "assets/image/srcImage.png"
+	AlphaImagePath     = "assets/image/alphaImage.png"
+	DstPngImagePath    = "assets/image/dstImage.png"
+	DstJpegImagePath   = "assets/image/dstImage.jpeg"
+	DstGifImagePath    = "assets/image/dstImage.gif"
+	PopFontPath        = "assets/font/lightNovelPOP.ttf"
 )
 
 func GetPngImage() image.Image {
@@ -305,6 +307,103 @@ func Test_converter_Grayscale(t *testing.T) {
 			assert.Equal(t, img.Bounds().Dx(), tt.fields.Image.Bounds().Dx())
 			assert.Equal(t, img.Bounds().Dy(), tt.fields.Image.Bounds().Dy())
 			SaveTestImage(img)
+		})
+	}
+}
+
+func Test_converter_AddString(t *testing.T) {
+	popTtf, _ := ReadTtf(PopFontPath)
+
+	type fields struct {
+		Image image.Image
+	}
+	type args struct {
+		text    string
+		options *Options
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			name:   "default",
+			fields: fields{Image: GetPngImage()},
+			args:   args{text: "default"},
+		},
+		{
+			name:   "font size 100 in top",
+			fields: fields{Image: GetPngImage()},
+			args:   args{text: "top", options: &Options{TrueTypeOptions: &truetype.Options{Size: 100}, Point: &image.Point{X: 750, Y: 0}}},
+		},
+		{
+			name:   "font size 200 in left",
+			fields: fields{Image: GetPngImage()},
+			args:   args{text: "left", options: &Options{TrueTypeOptions: &truetype.Options{Size: 200}, Point: &image.Point{X: 0, Y: 750}}},
+		},
+		{
+			name:   "font size 400 in right",
+			fields: fields{Image: GetPngImage()},
+			args:   args{text: "right", options: &Options{TrueTypeOptions: &truetype.Options{Size: 400}, Point: &image.Point{X: 1500, Y: 750}}},
+		},
+		{
+			name:   "font size 800 in bottom",
+			fields: fields{Image: GetPngImage()},
+			args:   args{text: "bottom", options: &Options{TrueTypeOptions: &truetype.Options{Size: 800}, Point: &image.Point{X: 750, Y: 1500}}},
+		},
+		{
+			name:   "white pop font",
+			fields: fields{Image: GetPngImage()},
+			args:   args{text: "うさぎ", options: &Options{TrueTypeFont: popTtf, TrueTypeOptions: &truetype.Options{Size: 400}, FontColor: image.White}},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &converter{
+				Image: tt.fields.Image,
+			}
+			c.AddString(tt.args.text, tt.args.options)
+			img := c.Convert()
+			assert.Equal(t, img.Bounds().Dx(), tt.fields.Image.Bounds().Dx())
+			assert.Equal(t, img.Bounds().Dy(), tt.fields.Image.Bounds().Dy())
+			SaveTestImage(img)
+		})
+	}
+}
+
+func TestReadTtf(t *testing.T) {
+	type args struct {
+		ttfFilePath string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *truetype.Font
+		wantErr bool
+	}{
+		{
+			name:    "normal",
+			args:    args{ttfFilePath: PopFontPath},
+			wantErr: false,
+		},
+		{
+			name:    "missing file",
+			args:    args{ttfFilePath: MissingImagePath},
+			wantErr: true,
+		},
+		{
+			name:    "wrong Extension file",
+			args:    args{ttfFilePath: WrongExtensionPath},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := ReadTtf(tt.args.ttfFilePath)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ReadTtf() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
 		})
 	}
 }

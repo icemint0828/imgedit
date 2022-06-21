@@ -3,7 +3,22 @@ package imgedit
 import (
 	"image"
 	"image/color"
+	"image/draw"
+	"io/ioutil"
 	"math"
+
+	"github.com/golang/freetype"
+	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font"
+	"golang.org/x/image/math/fixed"
+)
+
+const (
+	// DefaultTtfFilePath used when font is not specified in Options
+	DefaultTtfFilePath = "./assets/font/07LogoTypeGothic7.ttf"
+
+	// DefaultFontSize used when font size is not specified in Options
+	DefaultFontSize = 100
 )
 
 // Converter interface for image edit
@@ -115,7 +130,78 @@ func (c *converter) Grayscale() {
 	c.Image = dst
 }
 
+// Options options for AddString
+type Options struct {
+	// TrueTypeFont use ReadTtf to get font
+	TrueTypeFont    *truetype.Font
+	TrueTypeOptions *truetype.Options
+	// Point left top = (0px, 0px)
+	Point     *image.Point
+	FontColor *image.Uniform
+}
+
+// Face get font.Face
+func (o *Options) Face() font.Face {
+	return truetype.NewFace(o.TrueTypeFont, o.TrueTypeOptions)
+}
+
+// AddString add string on current Image
+func (c *converter) AddString(text string, options *Options) {
+	if options == nil {
+		options = &Options{}
+	}
+	if options.TrueTypeFont == nil {
+		options.TrueTypeFont, _ = ReadTtf(DefaultTtfFilePath)
+	}
+	if options.TrueTypeOptions == nil {
+		options.TrueTypeOptions = &truetype.Options{
+			Size: DefaultFontSize,
+		}
+	}
+	if options.FontColor == nil {
+		options.FontColor = image.Black
+	}
+
+	// copy base image
+	dst := image.NewRGBA(image.Rect(0, 0, c.Bounds().Dx(), c.Bounds().Dy()))
+	draw.Draw(dst, image.Rect(0, 0, c.Bounds().Dx(), c.Bounds().Dy()), c.Image, image.Point{}, draw.Over)
+
+	// add string on base image
+	face := options.Face()
+	drawer := &font.Drawer{
+		Dst:  dst,
+		Src:  options.FontColor,
+		Face: face,
+	}
+
+	// default center
+	centerX, centerY := (fixed.I(dst.Bounds().Dx())-drawer.MeasureString(text))/2, (fixed.I(dst.Bounds().Dy())+(face.Metrics().Ascent+face.Metrics().Descent)/2)/2
+
+	// notice : Dot values are determined by feeling.
+	if options.Point == nil {
+		drawer.Dot.X, drawer.Dot.Y = centerX, centerY
+	} else {
+		drawer.Dot.X, drawer.Dot.Y = fixed.I(options.Point.X)-drawer.MeasureString(text)/2, fixed.I(options.Point.Y)+((face.Metrics().Ascent+face.Metrics().Descent)/2)/2
+	}
+
+	drawer.DrawString(text)
+	c.Image = dst
+}
+
 // Convert get convert image
 func (c *converter) Convert() image.Image {
 	return c.Image
+}
+
+// ReadTtf return ttf from file path
+func ReadTtf(ttfFilePath string) (*truetype.Font, error) {
+	fontFile, err := ioutil.ReadFile(ttfFilePath)
+	if err != nil {
+		return nil, err
+	}
+	ttf, err := freetype.ParseFont(fontFile)
+	if err != nil {
+		return nil, err
+	}
+	return ttf, nil
 }
