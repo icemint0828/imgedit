@@ -3,6 +3,7 @@ package imgedit
 import (
 	"github.com/golang/freetype/truetype"
 	"image"
+	"image/color"
 	"image/gif"
 	"image/jpeg"
 	"image/png"
@@ -334,27 +335,52 @@ func Test_converter_AddString(t *testing.T) {
 		{
 			name:   "font size 100 in top",
 			fields: fields{Image: GetPngImage()},
-			args:   args{text: "top", options: &Options{TrueTypeOptions: &truetype.Options{Size: 100}, Point: &image.Point{X: 750, Y: 0}}},
+			args:   args{text: "top", options: &Options{Font: &Font{Size: 100}, Point: &image.Point{X: 750, Y: 0}}},
 		},
 		{
 			name:   "font size 200 in left",
 			fields: fields{Image: GetPngImage()},
-			args:   args{text: "left", options: &Options{TrueTypeOptions: &truetype.Options{Size: 200}, Point: &image.Point{X: 0, Y: 750}}},
+			args:   args{text: "left", options: &Options{Font: &Font{Size: 200}, Point: &image.Point{X: 0, Y: 750}}},
 		},
 		{
 			name:   "font size 400 in right",
 			fields: fields{Image: GetPngImage()},
-			args:   args{text: "right", options: &Options{TrueTypeOptions: &truetype.Options{Size: 400}, Point: &image.Point{X: 1500, Y: 750}}},
+			args:   args{text: "right", options: &Options{Font: &Font{Size: 400}, Point: &image.Point{X: 1500, Y: 750}}},
 		},
 		{
 			name:   "font size 800 in bottom",
 			fields: fields{Image: GetPngImage()},
-			args:   args{text: "bottom", options: &Options{TrueTypeOptions: &truetype.Options{Size: 800}, Point: &image.Point{X: 750, Y: 1500}}},
+			args:   args{text: "bottom", options: &Options{Font: &Font{Size: 800}, Point: &image.Point{X: 750, Y: 1500}}},
 		},
 		{
 			name:   "white pop font",
 			fields: fields{Image: GetPngImage()},
-			args:   args{text: "うさぎ", options: &Options{TrueTypeFont: popTtf, TrueTypeOptions: &truetype.Options{Size: 400}, FontColor: image.White}},
+			args:   args{text: "うさぎ", options: &Options{Font: &Font{Size: 400, TrueTypeFont: popTtf, Color: color.White}}},
+		},
+		{
+			name:   "font size 100 with outline",
+			fields: fields{Image: GetPngImage()},
+			args:   args{text: "Rabbit", options: &Options{Font: &Font{Size: 100, TrueTypeFont: popTtf, Color: color.White}, Outline: &Outline{Color: color.RGBA{R: 255, G: 192, B: 203, A: 255}, Width: 50}}},
+		},
+		{
+			name:   "font size 200 with outline",
+			fields: fields{Image: GetPngImage()},
+			args:   args{text: "Rabbit", options: &Options{Font: &Font{Size: 200, TrueTypeFont: popTtf, Color: color.White}, Outline: &Outline{Color: color.RGBA{R: 255, G: 192, B: 203, A: 255}, Width: 100}}},
+		},
+		{
+			name:   "font size 400 with outline",
+			fields: fields{Image: GetPngImage()},
+			args:   args{text: "Rabbit", options: &Options{Font: &Font{Size: 400, TrueTypeFont: popTtf, Color: color.White}, Outline: &Outline{Color: color.RGBA{R: 255, G: 192, B: 203, A: 255}, Width: 150}}},
+		},
+		{
+			name:   "font size 800 with outline",
+			fields: fields{Image: GetPngImage()},
+			args:   args{text: "Rabbit", options: &Options{Font: &Font{Size: 800, TrueTypeFont: popTtf, Color: color.White}, Outline: &Outline{Color: color.RGBA{R: 255, G: 192, B: 203, A: 255}, Width: 200}}},
+		},
+		{
+			name:   "font size 400 with default outline",
+			fields: fields{Image: GetPngImage()},
+			args:   args{text: "Rabbit", options: &Options{Font: &Font{Size: 400, TrueTypeFont: popTtf, Color: color.Black}, Outline: &Outline{}}},
 		},
 	}
 	for _, tt := range tests {

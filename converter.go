@@ -19,6 +19,9 @@ const (
 
 	// DefaultFontSize used when font size is not specified in Options
 	DefaultFontSize = 100
+
+	// DefaultOutlineWidth used when outline width is not specified in Options
+	DefaultOutlineWidth = 100
 )
 
 // Converter interface for image edit
@@ -132,17 +135,69 @@ func (c *converter) Grayscale() {
 
 // Options options for AddString
 type Options struct {
-	// TrueTypeFont use ReadTtf to get font
-	TrueTypeFont    *truetype.Font
-	TrueTypeOptions *truetype.Options
-	// Point left top = (0px, 0px)
-	Point     *image.Point
-	FontColor *image.Uniform
+	// Point left top = (0px, 0px), default center
+	Point *image.Point
+	// Font
+	Font *Font
+	// Outline
+	Outline *Outline
 }
 
-// Face get font.Face
-func (o *Options) Face() font.Face {
-	return truetype.NewFace(o.TrueTypeFont, o.TrueTypeOptions)
+// Font used in the options
+type Font struct {
+	// TrueTypeFont use ReadTtf to get font
+	TrueTypeFont *truetype.Font
+	// Size default 100
+	Size float64
+	// Color default color.Black
+	Color color.Color
+}
+
+// Outline used in the options
+type Outline struct {
+	// Color default color.White
+	Color color.Color
+	// Width from font. 0 <= Width <= 200 recommended
+	Width int
+}
+
+func (o *Options) setDefault() {
+	// font
+	if o.Font == nil {
+		o.Font = &Font{}
+	}
+	if o.Font.TrueTypeFont == nil {
+		o.Font.TrueTypeFont, _ = ReadTtf(DefaultTtfFilePath)
+	}
+	if o.Font.Size == 0 {
+		o.Font.Size = DefaultFontSize
+	}
+	if o.Font.Color == nil {
+		o.Font.Color = color.Black
+	}
+
+	// outLine
+	if o.Outline != nil {
+		if o.Outline.Color == nil {
+			o.Outline.Color = color.White
+		}
+		if o.Outline.Width == 0 {
+			o.Outline.Width = DefaultOutlineWidth
+		}
+	}
+}
+
+func (o *Options) face() font.Face {
+	// use only font size
+	return truetype.NewFace(o.Font.TrueTypeFont, &truetype.Options{Size: o.Font.Size})
+}
+
+func (o *Options) color() *image.Uniform {
+	return image.NewUniform(o.Font.Color)
+}
+
+func (o *Options) colorOutLine() *image.Uniform {
+	return image.NewUniform(o.Outline.Color)
 }
 
 // AddString add string on current Image
@@ -150,42 +205,70 @@ func (c *converter) AddString(text string, options *Options) {
 	if options == nil {
 		options = &Options{}
 	}
-	if options.TrueTypeFont == nil {
-		options.TrueTypeFont, _ = ReadTtf(DefaultTtfFilePath)
-	}
-	if options.TrueTypeOptions == nil {
-		options.TrueTypeOptions = &truetype.Options{
-			Size: DefaultFontSize,
-		}
-	}
-	if options.FontColor == nil {
-		options.FontColor = image.Black
-	}
+	options.setDefault()
 
 	// copy base image
 	dst := image.NewRGBA(image.Rect(0, 0, c.Bounds().Dx(), c.Bounds().Dy()))
 	draw.Draw(dst, image.Rect(0, 0, c.Bounds().Dx(), c.Bounds().Dy()), c.Image, image.Point{}, draw.Over)
 
-	// add string on base image
-	face := options.Face()
+	var outLinDrawer *font.Drawer
+	if options.Outline != nil {
+		outLinDrawer = &font.Drawer{
+			Dst:  dst,
+			Src:  options.colorOutLine(),
+			Face: options.face(),
+		}
+	}
+
 	drawer := &font.Drawer{
 		Dst:  dst,
-		Src:  options.FontColor,
-		Face: face,
+		Src:  options.color(),
+		Face: options.face(),
 	}
-
-	// default center
-	centerX, centerY := (fixed.I(dst.Bounds().Dx())-drawer.MeasureString(text))/2, (fixed.I(dst.Bounds().Dy())+(face.Metrics().Ascent+face.Metrics().Descent)/2)/2
-
-	// notice : Dot values are determined by feeling.
-	if options.Point == nil {
-		drawer.Dot.X, drawer.Dot.Y = centerX, centerY
-	} else {
-		drawer.Dot.X, drawer.Dot.Y = fixed.I(options.Point.X)-drawer.MeasureString(text)/2, fixed.I(options.Point.Y)+((face.Metrics().Ascent+face.Metrics().Descent)/2)/2
-	}
-
-	drawer.DrawString(text)
+	drawString(dst, drawer, outLinDrawer, text, options)
 	c.Image = dst
+}
+
+// drawString draw string at adjusted position
+func drawString(dst draw.Image, drawer *font.Drawer, outlineDrawer *font.Drawer, text string, options *Options) {
+	// notice : Dot values are determined by feeling.
+	// set drawer first position
+	if options.Point == nil {
+		drawer.Dot.X, drawer.Dot.Y = (fixed.I(dst.Bounds().Dx())-drawer.MeasureString(text))/2, (fixed.I(dst.Bounds().Dy())+(drawer.Face.Metrics().Ascent+drawer.Face.Metrics().Descent)/2)/2
+	} else {
+		drawer.Dot.X, drawer.Dot.Y = fixed.I(options.Point.X)-drawer.MeasureString(text)/2, fixed.I(options.Point.Y)+((drawer.Face.Metrics().Ascent+drawer.Face.Metrics().Descent)/2)/2
+	}
+	if outlineDrawer == nil {
+		drawer.DrawString(text)
+		return
+	}
+
+	// notice : width values are determined by feeling
+	width := drawer.Face.Metrics().Height / 128 / 100 * fixed.Int26_6(options.Outline.Width)
+
+	// draw letter by letter for adjust outline position
+	for _, s := range []byte(text) {
+		// As a technique, the image is drawn on the four corners,
+		// but that is an incomplete implementation of OUTLINE.
+
+		// left top
+		outlineDrawer.Dot = fixed.Point26_6{X: drawer.Dot.X - width, Y: drawer.Dot.Y - width}
+		outlineDrawer.DrawBytes([]byte{s})
+
+		// left bottom
+		outlineDrawer.Dot = fixed.Point26_6{X: drawer.Dot.X - width, Y: drawer.Dot.Y + width}
+		outlineDrawer.DrawBytes([]byte{s})
+
+		// right top
+		outlineDrawer.Dot = fixed.Point26_6{X: drawer.Dot.X + width, Y: drawer.Dot.Y - width}
+		outlineDrawer.DrawBytes([]byte{s})
+
+		// right bottom
+		outlineDrawer.Dot = fixed.Point26_6{X: drawer.Dot.X + width, Y: drawer.Dot.Y + width}
+		outlineDrawer.DrawBytes([]byte{s})
+
+		drawer.DrawBytes([]byte{s})
+	}
 }
 
 // Convert get convert image
