@@ -22,6 +22,7 @@
 - reverse
 - grayscale
 - interactive file format conversion (`png`, `jpeg`, `gif`)
+- add string
 
  <table>
     <tr>
@@ -32,17 +33,17 @@
     <tr>
       <td><img alt="resize" src="assets/image/resize.gif"></td>
       <td><img alt="trim" src="assets/image/trim.gif"></td>
-      <td><img alt="grayscale" src="assets/image/grayscale.gif"> </td>
+      <td><img alt="grayscale" src="assets/image/grayscale.gif"></td>
     </tr>
     <tr>
-      <td>reverse horizon </td>
-      <td>reverse vertical </td>
-      <td></td>
+      <td>reverse horizon</td>
+      <td>reverse vertical</td>
+      <td>add string</td>
     </tr>
     <tr>
       <td><img alt="reverse-x" src="assets/image/reverse-x.gif"></td>
       <td><img alt="reverse-y" src="assets/image/reverse-y.gif"></td>
-      <td></td>
+      <td><img alt="add-string" src="assets/image/add-string.gif"></td>
     </tr>
  </table>
 
