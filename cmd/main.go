@@ -118,7 +118,7 @@ func permuteArgs(args []string) {
 				}
 				/* the next flag has come */
 				optionVal := args[i+1]
-				if optionVal[0] == '-' {
+				if len(optionVal) == 0 || optionVal[0] == '-' {
 					exitOnError(errors.New(fmt.Sprintf("argument is missing for %s", v)))
 				}
 				flagArgs = append(flagArgs, args[i:i+2]...)

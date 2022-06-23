@@ -1,8 +1,11 @@
 package app
 
 import (
+	"errors"
 	"flag"
 	"fmt"
+	"image"
+	"image/color"
 	"os"
 	"path"
 	"path/filepath"
@@ -61,6 +64,40 @@ func (a *App) Run() error {
 		c.Trim(left, top, width, height)
 	case SubCommandGrayscale.Name:
 		c.Grayscale()
+	case SubCommandAddstring.Name:
+		left, top := int(flagUint(OptionLeft)), int(flagUint(OptionTop))
+		oTtf, oColor := flagString(OptionTtf), flagString(OptionColor)
+		size, text := float64(flagUint(OptionSize)), flagString(OptionText)
+		font := &imgedit.Font{}
+		if oTtf != "" {
+			ttf, err := imgedit.ReadTtf(oTtf)
+			if err != nil {
+				return err
+			}
+			font.TrueTypeFont = ttf
+		}
+		if oColor != "" {
+			switch oColor {
+			case "black":
+				font.Color = color.Black
+			case "white":
+				font.Color = color.White
+			case "red":
+				font.Color = color.RGBA{R: 255, G: 0, B: 0, A: 255}
+			case "blue":
+				font.Color = color.RGBA{R: 0, G: 0, B: 255, A: 255}
+			case "green":
+				font.Color = color.RGBA{R: 0, G: 255, B: 0, A: 255}
+			default:
+				return errors.New(fmt.Sprintf("The specified color %s is undefined.", oColor))
+			}
+		}
+		font.Size = size
+		option := &imgedit.StringOptions{
+			Point: &image.Point{X: left, Y: top},
+			Font:  font,
+		}
+		c.AddString(text, option)
 	case SubCommandPng.Name:
 		extension = imgedit.Png
 	case SubCommandJpeg.Name:
