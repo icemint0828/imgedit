@@ -24,6 +24,7 @@
 - interactive file format conversion (`png`, `jpeg`, `gif`)
 - add string
 - tile (lay down images)
+- filter (`gray`, `sepia`)
 
  <table>
     <tr>

@@ -312,6 +312,48 @@ func Test_converter_Grayscale(t *testing.T) {
 	}
 }
 
+func Test_converter_Filter(t *testing.T) {
+	type fields struct {
+		Image image.Image
+	}
+	type args struct {
+		filterModel FilterModel
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			name:   "grayModel",
+			fields: fields{Image: GetPngImage()},
+			args:   args{GrayModel},
+		},
+		{
+			name:   "sepiaModel",
+			fields: fields{Image: GetPngImage()},
+			args:   args{SepiaModel},
+		},
+		{
+			name:   "alpha",
+			fields: fields{Image: GetAlphaImage()},
+			args:   args{SepiaModel},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &converter{
+				Image: tt.fields.Image,
+			}
+			c.Filter(tt.args.filterModel)
+			img := c.Convert()
+			assert.Equal(t, img.Bounds().Dx(), tt.fields.Image.Bounds().Dx())
+			assert.Equal(t, img.Bounds().Dy(), tt.fields.Image.Bounds().Dy())
+			SaveTestImage(img)
+		})
+	}
+}
+
 func Test_converter_AddString(t *testing.T) {
 	popTtf, _ := ReadTtf(PopFontPath)
 

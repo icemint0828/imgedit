@@ -116,6 +116,7 @@ func (c *converter) ReverseY() {
 }
 
 // Grayscale change the image color to grayscale
+// Deprecated: Replace Filter(imgedit.GrayModel).
 func (c *converter) Grayscale() {
 	dst := image.NewRGBA(image.Rect(0, 0, c.Bounds().Dx(), c.Bounds().Dy()))
 	dstSize := dst.Bounds().Size()
@@ -129,6 +130,50 @@ func (c *converter) Grayscale() {
 				dst.Set(x, y, alphaModel.Convert(dstColor))
 			} else {
 				dst.Set(x, y, grayModel.Convert(dstColor))
+			}
+		}
+	}
+	c.Image = dst
+}
+
+// FilterModel wrapper
+type FilterModel color.Model
+
+// GrayModel convert image to gray
+var GrayModel = FilterModel(color.GrayModel)
+
+// SepiaModel convert image to sepia
+var SepiaModel = FilterModel(color.ModelFunc(sepiaModel))
+
+func sepiaModel(c color.Color) color.Color {
+	// once converted to GRAY, then to SEPIA, we can get a beautiful conversion.
+	// color.grayModel(c color.Color) color.Color
+	r, g, b, a := c.RGBA()
+
+	y := (19595*r + 38470*g + 7471*b + 1<<15) >> 24
+
+	r, g, b, a = color.Gray{Y: uint8(y)}.RGBA()
+
+	r = uint32(float64(r) * (float64(240) / float64(255)))
+	g = uint32(float64(g) * (float64(200) / float64(255)))
+	b = uint32(float64(b) * (float64(148) / float64(255)))
+	return color.RGBA{R: uint8(r >> 8), G: uint8(g >> 8), B: uint8(b >> 8), A: uint8(a >> 8)}
+}
+
+// Filter change the image color to specified color model
+// GrayModel, SepiaModel
+func (c *converter) Filter(filterModel FilterModel) {
+	dst := image.NewRGBA(image.Rect(0, 0, c.Bounds().Dx(), c.Bounds().Dy()))
+	dstSize := dst.Bounds().Size()
+	alphaModel := color.AlphaModel
+	for x := 0; x < dstSize.X; x++ {
+		for y := 0; y < dstSize.Y; y++ {
+			dstColor := c.Image.At(x, y)
+			_, _, _, a := dstColor.RGBA()
+			if a <= 0 {
+				dst.Set(x, y, alphaModel.Convert(dstColor))
+			} else {
+				dst.Set(x, y, filterModel.Convert(dstColor))
 			}
 		}
 	}
