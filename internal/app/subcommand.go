@@ -7,6 +7,7 @@ import (
 var SupportedSubCommands = SubCommands{
 	SubCommandReverse,
 	SubCommandResize,
+	SubCommandTile,
 	SubCommandTrim,
 	SubCommandGrayscale,
 	SubCommandPng,
@@ -49,6 +50,13 @@ var SubCommandResize = &SubCommand{
 	OptionalOptions: []*Option{OptionWidth, OptionHeight, OptionRatio},
 }
 
+var SubCommandTile = &SubCommand{
+	Name:            "tile",
+	Usage:           "lay down images with x * y",
+	RequiredOptions: []*Option{OptionX, OptionY},
+	OptionalOptions: []*Option{},
+}
+
 var SubCommandTrim = &SubCommand{
 	Name:            "trim",
 	Usage:           "trim image",
@@ -77,6 +85,8 @@ var OptionHeight = &Option{Name: "height", Usage: "height px."}
 var OptionRatio = &Option{Name: "ratio", Usage: "ratio for resize. if ratio is set, width and height are ignored."}
 var OptionTop = &Option{Name: "top", Usage: "start top point px of trim."}
 var OptionLeft = &Option{Name: "left", Usage: "start left point px of trim."}
+var OptionX = &Option{Name: "x", Usage: "x length for tile."}
+var OptionY = &Option{Name: "y", Usage: "y length for tile."}
 
 // Option for subcommands
 type Option struct {
