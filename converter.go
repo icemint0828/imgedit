@@ -1,6 +1,7 @@
 package imgedit
 
 import (
+	_ "embed"
 	"image"
 	"image/color"
 	"image/draw"
@@ -14,15 +15,15 @@ import (
 )
 
 const (
-	// DefaultTtfFilePath used when font is not specified in StringOptions
-	DefaultTtfFilePath = "./assets/font/07LogoTypeGothic7.ttf"
-
 	// DefaultFontSize used when font size is not specified in StringOptions
 	DefaultFontSize = 100
 
 	// DefaultOutlineWidth used when outline width is not specified in StringOptions
 	DefaultOutlineWidth = 100
 )
+
+//go:embed assets/font/07LogoTypeGothic7.ttf
+var TtfFile []byte
 
 // Converter interface for image edit
 type Converter interface {
@@ -212,7 +213,7 @@ func (o *StringOptions) setDefault() {
 		o.Font = &Font{}
 	}
 	if o.Font.TrueTypeFont == nil {
-		o.Font.TrueTypeFont, _ = ReadTtf(DefaultTtfFilePath)
+		o.Font.TrueTypeFont, _ = ReadTtfFromByte(TtfFile)
 	}
 	if o.Font.Size == 0 {
 		o.Font.Size = DefaultFontSize
@@ -247,6 +248,9 @@ func (o *StringOptions) colorOutLine() *image.Uniform {
 
 // AddString add string on current Image
 func (c *converter) AddString(text string, options *StringOptions) {
+	if text == "" {
+		return
+	}
 	if options == nil {
 		options = &StringOptions{}
 	}
@@ -343,6 +347,15 @@ func ReadTtf(ttfFilePath string) (*truetype.Font, error) {
 		return nil, err
 	}
 	ttf, err := freetype.ParseFont(fontFile)
+	if err != nil {
+		return nil, err
+	}
+	return ttf, nil
+}
+
+// ReadTtfFromByte return ttf from file byte
+func ReadTtfFromByte(ttfFile []byte) (*truetype.Font, error) {
+	ttf, err := freetype.ParseFont(ttfFile)
 	if err != nil {
 		return nil, err
 	}

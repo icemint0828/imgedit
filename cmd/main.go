@@ -17,14 +17,16 @@ const (
 )
 
 func main() {
-	flag.Bool(app.OptionVertical.Name, false, app.OptionVertical.Usage)
-	flag.Uint(app.OptionWidth.Name, 0, app.OptionWidth.Usage)
-	flag.Uint(app.OptionHeight.Name, 0, app.OptionHeight.Usage)
-	flag.Float64(app.OptionRatio.Name, 0, app.OptionRatio.Usage)
-	flag.Uint(app.OptionLeft.Name, 0, app.OptionLeft.Usage)
-	flag.Uint(app.OptionTop.Name, 0, app.OptionTop.Usage)
-	flag.Uint(app.OptionX.Name, 0, app.OptionX.Usage)
-	flag.Uint(app.OptionY.Name, 0, app.OptionY.Name)
+	checkedOptions := map[string]bool{}
+	for _, subCommand := range app.SupportedSubCommands {
+		options := append(subCommand.OptionalOptions, subCommand.RequiredOptions...)
+		for _, option := range options {
+			if _, ok := checkedOptions[option.Name()]; !ok {
+				option.RegisterFlag()
+				checkedOptions[option.Name()] = true
+			}
+		}
+	}
 	flag.CommandLine.Usage = usage
 	permuteArgs(os.Args[1:])
 	flag.Parse()
@@ -80,13 +82,13 @@ func usage() {
 		if len(subCommand.RequiredOptions) > 0 {
 			fmt.Printf("    (required options)\n")
 			for _, option := range subCommand.RequiredOptions {
-				fmt.Printf("      -%s : %s\n", option.Name, option.Usage)
+				fmt.Printf("      -%s : %s\n", option.Name(), option.Usage())
 			}
 		}
 		if len(subCommand.OptionalOptions) > 0 {
 			fmt.Printf("    (optional options)\n")
 			for _, option := range subCommand.OptionalOptions {
-				fmt.Printf("      -%s : %s\n", option.Name, option.Usage)
+				fmt.Printf("      -%s : %s\n", option.Name(), option.Usage())
 			}
 		}
 	}
@@ -107,21 +109,20 @@ func permuteArgs(args []string) {
 		if v[0] == '-' {
 			optionName := v[1:]
 			switch optionName {
-			case app.OptionHeight.Name, app.OptionWidth.Name, app.OptionRatio.Name, app.OptionLeft.Name, app.OptionTop.Name,
-				app.OptionX.Name, app.OptionY.Name:
+			case app.OptionVertical.Name(), "h", "help":
+				flagArgs = append(flagArgs, args[i])
+			default:
 				/* out of index */
 				if len(args) <= i+1 {
 					exitOnError(errors.New(fmt.Sprintf("argument is missing for %s", v)))
 				}
 				/* the next flag has come */
 				optionVal := args[i+1]
-				if optionVal[0] == '-' {
+				if len(optionVal) == 0 || optionVal[0] == '-' {
 					exitOnError(errors.New(fmt.Sprintf("argument is missing for %s", v)))
 				}
 				flagArgs = append(flagArgs, args[i:i+2]...)
 				i++
-			default:
-				flagArgs = append(flagArgs, args[i])
 			}
 		} else {
 			nonFlagArgs = append(nonFlagArgs, args[i])
