@@ -424,6 +424,11 @@ func Test_converter_AddString(t *testing.T) {
 			fields: fields{Image: GetPngImage()},
 			args:   args{text: "Rabbit", options: &StringOptions{Font: &Font{Size: 400, TrueTypeFont: popTtf, Color: color.Black}, Outline: &Outline{}}},
 		},
+		{
+			name:   "empty",
+			fields: fields{Image: GetPngImage()},
+			args:   args{text: ""},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -504,6 +509,37 @@ func TestReadTtf(t *testing.T) {
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadTtf() error = %v, wantErr %v", err, tt.wantErr)
 				return
+			}
+		})
+	}
+}
+
+func TestReadTtfFromByte(t *testing.T) {
+	type args struct {
+		ttfFile []byte
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *truetype.Font
+		wantErr bool
+	}{
+		{
+			name:    "error case",
+			args:    args{ttfFile: []byte{}},
+			want:    nil,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ReadTtfFromByte(tt.args.ttfFile)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ReadTtfFromByte() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ReadTtfFromByte() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

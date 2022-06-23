@@ -214,9 +214,6 @@ func (o *StringOptions) setDefault() {
 	}
 	if o.Font.TrueTypeFont == nil {
 		o.Font.TrueTypeFont, _ = ReadTtfFromByte(TtfFile)
-
-		if o.Font.TrueTypeFont == nil {
-		}
 	}
 	if o.Font.Size == 0 {
 		o.Font.Size = DefaultFontSize
