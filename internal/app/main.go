@@ -38,26 +38,26 @@ func (a *App) Run() error {
 	// convert image
 	switch a.subCommand.Name {
 	case SubCommandReverse.Name:
-		isVertical := flagBool(OptionVertical.Name)
+		isVertical := flagBool(OptionVertical)
 		if isVertical {
 			c.ReverseY()
 		} else {
 			c.ReverseX()
 		}
 	case SubCommandResize.Name:
-		ratio := flagFloat64(OptionRatio.Name)
-		width, height := int(flagUint(OptionWidth.Name)), int(flagUint(OptionHeight.Name))
+		ratio := flagFloat64(OptionRatio)
+		width, height := int(flagUint(OptionWidth)), int(flagUint(OptionHeight))
 		if ratio != 0 {
 			c.ResizeRatio(ratio)
 		} else {
 			c.Resize(width, height)
 		}
 	case SubCommandTile.Name:
-		xLength, yLength := int(flagUint(OptionX.Name)), int(flagUint(OptionY.Name))
+		xLength, yLength := int(flagUint(OptionX)), int(flagUint(OptionY))
 		c.Tile(xLength, yLength)
 	case SubCommandTrim.Name:
-		left, top := int(flagUint(OptionLeft.Name)), int(flagUint(OptionTop.Name))
-		width, height := int(flagUint(OptionWidth.Name)), int(flagUint(OptionHeight.Name))
+		left, top := int(flagUint(OptionLeft)), int(flagUint(OptionTop))
+		width, height := int(flagUint(OptionWidth)), int(flagUint(OptionHeight))
 		c.Trim(left, top, width, height)
 	case SubCommandGrayscale.Name:
 		c.Grayscale()
@@ -82,16 +82,20 @@ func (a *App) Run() error {
 	return nil
 }
 
-func flagUint(name string) uint {
-	return flag.Lookup(name).Value.(flag.Getter).Get().(uint)
+func flagUint(option Option) uint {
+	return flag.Lookup(option.Name()).Value.(flag.Getter).Get().(uint)
 }
 
-func flagFloat64(name string) float64 {
-	return flag.Lookup(name).Value.(flag.Getter).Get().(float64)
+func flagFloat64(option Option) float64 {
+	return flag.Lookup(option.Name()).Value.(flag.Getter).Get().(float64)
 }
 
-func flagBool(name string) bool {
-	return flag.Lookup(name).Value.(flag.Getter).Get().(bool)
+func flagBool(option Option) bool {
+	return flag.Lookup(option.Name()).Value.(flag.Getter).Get().(bool)
+}
+
+func flagString(option Option) string {
+	return flag.Lookup(option.Name()).Value.(flag.Getter).Get().(string)
 }
 
 func (a *App) getOutputPath(extension imgedit.Extension) (string, error) {
