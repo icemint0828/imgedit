@@ -31,6 +31,8 @@ type Converter interface {
 	Trim(left, top, width, height int)
 	ReverseX()
 	ReverseY()
+	Filter(filterModel FilterModel)
+	// Deprecated: Replace Filter(imgedit.GrayModel).
 	Grayscale()
 	AddString(text string, options *StringOptions)
 	Tile(xLength, yLength int)

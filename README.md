@@ -19,23 +19,23 @@
 
 - resize
 - trim
-- reverse
-- grayscale
-- interactive file format conversion (`png`, `jpeg`, `gif`)
-- add string
 - tile (lay down images)
+- reverse (`vertical`, `horizon`)
+- ~~grayscale~~
+- add string
 - filter (`gray`, `sepia`)
+- interactive file format conversion (`png`, `jpeg`, `gif`)
 
  <table>
     <tr>
       <td>resize</td>
       <td>trim</td>
-      <td>grayscale</td>
+      <td>tile</td>
     </tr>
     <tr>
       <td><img alt="resize" src="assets/image/resize.gif"></td>
       <td><img alt="trim" src="assets/image/trim.gif"></td>
-      <td><img alt="grayscale" src="assets/image/grayscale.gif"></td>
+      <td><img alt="tile" src="assets/image/tile.gif"></td>
     </tr>
     <tr>
       <td>reverse horizon</td>
@@ -43,9 +43,19 @@
       <td>add string</td>
     </tr>
     <tr>
-      <td><img alt="reverse-x" src="assets/image/reverse-x.gif"></td>
-      <td><img alt="reverse-y" src="assets/image/reverse-y.gif"></td>
-      <td><img alt="add-string" src="assets/image/add-string.gif"></td>
+      <td><img alt="reverse horizon" src="assets/image/reverse-x.gif"></td>
+      <td><img alt="reverse vertical" src="assets/image/reverse-y.gif"></td>
+      <td><img alt="add string" src="assets/image/add-string.gif"></td>
+    </tr>
+    <tr>
+      <td>filter gray</td>
+      <td>filter sepia</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><img alt="filter gray" src="assets/image/gray.gif"></td>
+      <td><img alt="filter sepia" src="assets/image/sepia.gif"></td>
+      <td></td>
     </tr>
  </table>
 
@@ -65,7 +75,7 @@ func main() {
     if err != nil {
         panic(err)
     }
-    fc.Grayscale()
+    fc.Filter(imgedit.GrayModel)
     err = fc.SaveAs("dstImage.png", imgedit.Png)
     if err != nil {
         panic(err)
