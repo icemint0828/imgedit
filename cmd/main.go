@@ -23,6 +23,8 @@ func main() {
 	flag.Float64(app.OptionRatio.Name, 0, app.OptionRatio.Usage)
 	flag.Uint(app.OptionLeft.Name, 0, app.OptionLeft.Usage)
 	flag.Uint(app.OptionTop.Name, 0, app.OptionTop.Usage)
+	flag.Uint(app.OptionX.Name, 0, app.OptionX.Usage)
+	flag.Uint(app.OptionY.Name, 0, app.OptionY.Name)
 	flag.CommandLine.Usage = usage
 	permuteArgs(os.Args[1:])
 	flag.Parse()
@@ -105,7 +107,8 @@ func permuteArgs(args []string) {
 		if v[0] == '-' {
 			optionName := v[1:]
 			switch optionName {
-			case app.OptionHeight.Name, app.OptionWidth.Name, app.OptionRatio.Name, app.OptionLeft.Name, app.OptionTop.Name:
+			case app.OptionHeight.Name, app.OptionWidth.Name, app.OptionRatio.Name, app.OptionLeft.Name, app.OptionTop.Name,
+				app.OptionX.Name, app.OptionY.Name:
 				/* out of index */
 				if len(args) <= i+1 {
 					exitOnError(errors.New(fmt.Sprintf("argument is missing for %s", v)))

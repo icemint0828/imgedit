@@ -52,6 +52,9 @@ func (a *App) Run() error {
 		} else {
 			c.Resize(width, height)
 		}
+	case SubCommandTile.Name:
+		xLength, yLength := int(flagUint(OptionX.Name)), int(flagUint(OptionY.Name))
+		c.Tile(xLength, yLength)
 	case SubCommandTrim.Name:
 		left, top := int(flagUint(OptionLeft.Name)), int(flagUint(OptionTop.Name))
 		width, height := int(flagUint(OptionWidth.Name)), int(flagUint(OptionHeight.Name))
