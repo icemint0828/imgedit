@@ -13,7 +13,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fc.Grayscale()
+	fc.Filter(imgedit.GrayModel)
 	err = fc.SaveAs("examples/dstImage.png", imgedit.Png)
 	if err != nil {
 		panic(err)
