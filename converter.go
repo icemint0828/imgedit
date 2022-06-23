@@ -14,13 +14,13 @@ import (
 )
 
 const (
-	// DefaultTtfFilePath used when font is not specified in Options
+	// DefaultTtfFilePath used when font is not specified in StringOptions
 	DefaultTtfFilePath = "./assets/font/07LogoTypeGothic7.ttf"
 
-	// DefaultFontSize used when font size is not specified in Options
+	// DefaultFontSize used when font size is not specified in StringOptions
 	DefaultFontSize = 100
 
-	// DefaultOutlineWidth used when outline width is not specified in Options
+	// DefaultOutlineWidth used when outline width is not specified in StringOptions
 	DefaultOutlineWidth = 100
 )
 
@@ -32,6 +32,7 @@ type Converter interface {
 	ReverseX()
 	ReverseY()
 	Grayscale()
+	AddString(text string, options *StringOptions)
 	Convert() image.Image
 }
 
@@ -133,8 +134,8 @@ func (c *converter) Grayscale() {
 	c.Image = dst
 }
 
-// Options options for AddString
-type Options struct {
+// StringOptions options for AddString
+type StringOptions struct {
 	// Point left top = (0px, 0px), default center
 	Point *image.Point
 	// Font
@@ -161,7 +162,7 @@ type Outline struct {
 	Width int
 }
 
-func (o *Options) setDefault() {
+func (o *StringOptions) setDefault() {
 	// font
 	if o.Font == nil {
 		o.Font = &Font{}
@@ -187,23 +188,23 @@ func (o *Options) setDefault() {
 	}
 }
 
-func (o *Options) face() font.Face {
+func (o *StringOptions) face() font.Face {
 	// use only font size
 	return truetype.NewFace(o.Font.TrueTypeFont, &truetype.Options{Size: o.Font.Size})
 }
 
-func (o *Options) color() *image.Uniform {
+func (o *StringOptions) color() *image.Uniform {
 	return image.NewUniform(o.Font.Color)
 }
 
-func (o *Options) colorOutLine() *image.Uniform {
+func (o *StringOptions) colorOutLine() *image.Uniform {
 	return image.NewUniform(o.Outline.Color)
 }
 
 // AddString add string on current Image
-func (c *converter) AddString(text string, options *Options) {
+func (c *converter) AddString(text string, options *StringOptions) {
 	if options == nil {
-		options = &Options{}
+		options = &StringOptions{}
 	}
 	options.setDefault()
 
@@ -230,7 +231,7 @@ func (c *converter) AddString(text string, options *Options) {
 }
 
 // drawString draw string at adjusted position
-func drawString(dst draw.Image, drawer *font.Drawer, outlineDrawer *font.Drawer, text string, options *Options) {
+func drawString(dst draw.Image, drawer *font.Drawer, outlineDrawer *font.Drawer, text string, options *StringOptions) {
 	// notice : Dot values are determined by feeling.
 	// set drawer first position
 	if options.Point == nil {
