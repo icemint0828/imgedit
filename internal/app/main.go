@@ -1,9 +1,9 @@
 package app
 
 import (
-	"errors"
 	"flag"
 	"fmt"
+	"github.com/golang/freetype/truetype"
 	"image"
 	"image/color"
 	"os"
@@ -68,34 +68,9 @@ func (a *App) Run() error {
 		left, top := int(flagUint(OptionLeft)), int(flagUint(OptionTop))
 		oTtf, oColor := flagString(OptionTtf), flagString(OptionColor)
 		size, text := float64(flagUint(OptionSize)), flagString(OptionText)
-		font := &imgedit.Font{}
-		if oTtf != "" {
-			ttf, err := imgedit.ReadTtf(oTtf)
-			if err != nil {
-				return err
-			}
-			font.TrueTypeFont = ttf
-		}
-		if oColor != "" {
-			switch oColor {
-			case "black":
-				font.Color = color.Black
-			case "white":
-				font.Color = color.White
-			case "red":
-				font.Color = color.RGBA{R: 255, G: 0, B: 0, A: 255}
-			case "blue":
-				font.Color = color.RGBA{R: 0, G: 0, B: 255, A: 255}
-			case "green":
-				font.Color = color.RGBA{R: 0, G: 255, B: 0, A: 255}
-			default:
-				return errors.New(fmt.Sprintf("The specified color %s is undefined.", oColor))
-			}
-		}
-		font.Size = size
 		option := &imgedit.StringOptions{
 			Point: &image.Point{X: left, Y: top},
-			Font:  font,
+			Font:  &imgedit.Font{TrueTypeFont: getTtf(oTtf), Size: size, Color: getColor(oColor)},
 		}
 		c.AddString(text, option)
 	case SubCommandPng.Name:
@@ -117,6 +92,37 @@ func (a *App) Run() error {
 	}
 	fmt.Printf("save convert file: %s\n", outputPath)
 	return nil
+}
+
+func getTtf(ttfPath string) *truetype.Font {
+	if ttfPath == "" {
+		return nil
+	}
+	ttf, err := imgedit.ReadTtf(ttfPath)
+	if err != nil {
+		return nil
+	}
+	return ttf
+}
+
+func getColor(colorString string) color.Color {
+	if colorString == "" {
+		return nil
+	}
+	switch colorString {
+	case "black":
+		return color.Black
+	case "white":
+		return color.White
+	case "red":
+		return color.RGBA{R: 255, G: 0, B: 0, A: 255}
+	case "blue":
+		return color.RGBA{R: 0, G: 0, B: 255, A: 255}
+	case "green":
+		return color.RGBA{R: 0, G: 255, B: 0, A: 255}
+	default:
+		return nil
+	}
 }
 
 func flagUint(option Option) uint {
