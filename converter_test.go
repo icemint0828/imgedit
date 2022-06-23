@@ -397,6 +397,39 @@ func Test_converter_AddString(t *testing.T) {
 	}
 }
 
+func Test_converter_Tile(t *testing.T) {
+	type fields struct {
+		Image image.Image
+	}
+	type args struct {
+		xLength int
+		yLength int
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			name:   "normal",
+			fields: fields{Image: GetPngImage()},
+			args:   args{xLength: 2, yLength: 3},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &converter{
+				Image: tt.fields.Image,
+			}
+			c.Tile(tt.args.xLength, tt.args.yLength)
+			img := c.Convert()
+			assert.Equal(t, img.Bounds().Dx(), tt.fields.Image.Bounds().Dx()*tt.args.xLength)
+			assert.Equal(t, img.Bounds().Dy(), tt.fields.Image.Bounds().Dy()*tt.args.yLength)
+			SaveTestImage(img)
+		})
+	}
+}
+
 func TestReadTtf(t *testing.T) {
 	type args struct {
 		ttfFilePath string

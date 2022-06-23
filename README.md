@@ -23,6 +23,7 @@
 - grayscale
 - interactive file format conversion (`png`, `jpeg`, `gif`)
 - add string
+- tile (lay down images)
 
  <table>
     <tr>
