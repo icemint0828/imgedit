@@ -132,6 +132,12 @@ You can download the executable file from the link below.
 
 - ### [mac OS](https://github.com/icemint0828/imgedit/releases/latest/download/imgedit_MacOS.zip)
 
+Or if you can use `brew` on mac OS.
+
+```shell
+brew install icemint0828/tap/imgedit
+```
+
 For more information, please use the help command:
 
 ```shell
