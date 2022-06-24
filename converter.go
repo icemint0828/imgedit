@@ -162,6 +162,10 @@ func sepiaModel(c color.Color) color.Color {
 // Filter change the image color to specified color model
 // GrayModel, SepiaModel
 func (c *converter) Filter(filterModel FilterModel) {
+	if filterModel == nil {
+		return
+	}
+
 	dst := image.NewRGBA(image.Rect(0, 0, c.Bounds().Dx(), c.Bounds().Dy()))
 	dstSize := dst.Bounds().Size()
 	alphaModel := color.AlphaModel
