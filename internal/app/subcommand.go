@@ -9,6 +9,7 @@ var SupportedSubCommands = SubCommands{
 	SubCommandResize,
 	SubCommandTile,
 	SubCommandTrim,
+	SubCommandFilter,
 	SubCommandGrayscale,
 	SubCommandAddstring,
 	SubCommandPng,
@@ -67,7 +68,7 @@ var SubCommandTrim = &SubCommand{
 
 var SubCommandGrayscale = &SubCommand{
 	Name:            "grayscale",
-	Usage:           "change image color to grayscale",
+	Usage:           "deprecated this command, use filter -mode gray",
 	RequiredOptions: []Option{},
 	OptionalOptions: []Option{},
 }
@@ -77,6 +78,13 @@ var SubCommandAddstring = &SubCommand{
 	Usage:           "add string on image",
 	RequiredOptions: []Option{OptionText},
 	OptionalOptions: []Option{OptionTtf, OptionSize, OptionTop, OptionLeft, OptionColor},
+}
+
+var SubCommandFilter = &SubCommand{
+	Name:            "filter",
+	Usage:           "filter with the specified color mode",
+	RequiredOptions: []Option{OptionMode},
+	OptionalOptions: []Option{},
 }
 
 // SubCommand imgedit subcommand

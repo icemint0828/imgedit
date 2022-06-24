@@ -1,7 +1,6 @@
 package app
 
 import (
-	"flag"
 	"fmt"
 	"github.com/golang/freetype/truetype"
 	"image"
@@ -58,6 +57,8 @@ func (a *App) Run() error {
 		c.Trim(OptionLeft.Int(), OptionTop.Int(), OptionWidth.Int(), OptionHeight.Int())
 	case SubCommandGrayscale.Name:
 		c.Grayscale()
+	case SubCommandFilter.Name:
+		c.Filter(getModel(OptionMode.String()))
 	case SubCommandAddstring.Name:
 		option := &imgedit.StringOptions{
 			Point: &image.Point{X: OptionLeft.Int(), Y: OptionTop.Int()},
@@ -111,6 +112,17 @@ func getColor(colorString string) color.Color {
 		return color.RGBA{R: 0, G: 0, B: 255, A: 255}
 	case "green":
 		return color.RGBA{R: 0, G: 255, B: 0, A: 255}
+	default:
+		return nil
+	}
+}
+
+func getModel(modeString string) imgedit.FilterModel {
+	switch modeString {
+	case "gray":
+		return imgedit.GrayModel
+	case "sepia":
+		return imgedit.SepiaModel
 	default:
 		return nil
 	}

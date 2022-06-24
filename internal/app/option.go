@@ -5,7 +5,7 @@ import "flag"
 var OptionVertical = &BoolOption{
 	option: option{
 		name:  "vertical",
-		usage: "direction for reverse. default horizon.",
+		usage: "specify direction as vertical. default horizon.",
 	},
 	defaultVal: false,
 }
@@ -26,7 +26,7 @@ var OptionHeight = &UintOption{
 var OptionRatio = &Float64Option{
 	option: option{
 		name:  "ratio",
-		usage: "ratio for resize. if ratio is set, width and height are ignored.",
+		usage: "ratio. if ratio is set, width and height are ignored.",
 	},
 	defaultVal: 0,
 }
@@ -47,42 +47,49 @@ var OptionLeft = &UintOption{
 var OptionX = &UintOption{
 	option: option{
 		name:  "x",
-		usage: "x length for tile.",
+		usage: "x length.",
 	},
 	defaultVal: 0,
 }
 var OptionY = &UintOption{
 	option: option{
 		name:  "y",
-		usage: "y length for tile.",
+		usage: "y length.",
 	},
 	defaultVal: 0,
 }
 var OptionText = &StringOption{
 	option: option{
 		name:  "text",
-		usage: "text for addstring.",
+		usage: "text.",
 	},
 	defaultVal: "",
 }
 var OptionTtf = &StringOption{
 	option: option{
 		name:  "ttf",
-		usage: "ttf file path for addstring.",
+		usage: "ttf file path.",
 	},
 	defaultVal: "",
 }
 var OptionSize = &UintOption{
 	option: option{
 		name:  "size",
-		usage: "font size for addstring.",
+		usage: "font size.",
 	},
 	defaultVal: 0,
 }
 var OptionColor = &StringOption{
 	option: option{
 		name:  "color",
-		usage: "font color for addstring(back, white, red, blue, green).",
+		usage: "font color(back, white, red, blue, green).",
+	},
+	defaultVal: "",
+}
+var OptionMode = &StringOption{
+	option: option{
+		name:  "mode",
+		usage: "filter color(sepia, gray).",
 	},
 	defaultVal: "",
 }
