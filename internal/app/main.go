@@ -41,38 +41,29 @@ func (a *App) Run() error {
 	// convert image
 	switch a.subCommand.Name {
 	case SubCommandReverse.Name:
-		isVertical := flagBool(OptionVertical)
-		if isVertical {
+		if OptionVertical.Bool() {
 			c.ReverseY()
 		} else {
 			c.ReverseX()
 		}
 	case SubCommandResize.Name:
-		ratio := flagFloat64(OptionRatio)
-		width, height := int(flagUint(OptionWidth)), int(flagUint(OptionHeight))
-		if ratio != 0 {
-			c.ResizeRatio(ratio)
+		if OptionRatio.Float64() != 0 {
+			c.ResizeRatio(OptionRatio.Float64())
 		} else {
-			c.Resize(width, height)
+			c.Resize(OptionWidth.Int(), OptionHeight.Int())
 		}
 	case SubCommandTile.Name:
-		xLength, yLength := int(flagUint(OptionX)), int(flagUint(OptionY))
-		c.Tile(xLength, yLength)
+		c.Tile(OptionX.Int(), OptionY.Int())
 	case SubCommandTrim.Name:
-		left, top := int(flagUint(OptionLeft)), int(flagUint(OptionTop))
-		width, height := int(flagUint(OptionWidth)), int(flagUint(OptionHeight))
-		c.Trim(left, top, width, height)
+		c.Trim(OptionLeft.Int(), OptionTop.Int(), OptionWidth.Int(), OptionHeight.Int())
 	case SubCommandGrayscale.Name:
 		c.Grayscale()
 	case SubCommandAddstring.Name:
-		left, top := int(flagUint(OptionLeft)), int(flagUint(OptionTop))
-		oTtf, oColor := flagString(OptionTtf), flagString(OptionColor)
-		size, text := float64(flagUint(OptionSize)), flagString(OptionText)
 		option := &imgedit.StringOptions{
-			Point: &image.Point{X: left, Y: top},
-			Font:  &imgedit.Font{TrueTypeFont: getTtf(oTtf), Size: size, Color: getColor(oColor)},
+			Point: &image.Point{X: OptionLeft.Int(), Y: OptionTop.Int()},
+			Font:  &imgedit.Font{TrueTypeFont: getTtf(OptionTtf.String()), Size: OptionSize.Float64(), Color: getColor(OptionColor.String())},
 		}
-		c.AddString(text, option)
+		c.AddString(OptionText.String(), option)
 	case SubCommandPng.Name:
 		extension = imgedit.Png
 	case SubCommandJpeg.Name:
@@ -123,22 +114,6 @@ func getColor(colorString string) color.Color {
 	default:
 		return nil
 	}
-}
-
-func flagUint(option Option) uint {
-	return flag.Lookup(option.Name()).Value.(flag.Getter).Get().(uint)
-}
-
-func flagFloat64(option Option) float64 {
-	return flag.Lookup(option.Name()).Value.(flag.Getter).Get().(float64)
-}
-
-func flagBool(option Option) bool {
-	return flag.Lookup(option.Name()).Value.(flag.Getter).Get().(bool)
-}
-
-func flagString(option Option) string {
-	return flag.Lookup(option.Name()).Value.(flag.Getter).Get().(string)
 }
 
 func (a *App) getOutputPath(extension imgedit.Extension) (string, error) {
