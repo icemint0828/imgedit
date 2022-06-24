@@ -1,7 +1,6 @@
 package app
 
 import (
-	"flag"
 	"fmt"
 	"github.com/golang/freetype/truetype"
 	"image"
@@ -30,6 +29,18 @@ func NewApp(subCommand *SubCommand, filePath string) *App {
 	}
 }
 
+type subcommand func(imgedit.FileConverter)
+
+var subcommands = map[string]subcommand{
+	"resize":    resize,
+	"trim":      trim,
+	"tile":      tile,
+	"reverse":   reverse,
+	"grayscale": grayscale,
+	"addstring": addstring,
+	"filter":    filter,
+}
+
 // Run edit the image
 func (a *App) Run() error {
 	// load image
@@ -37,48 +48,18 @@ func (a *App) Run() error {
 	if err != nil {
 		return err
 	}
-
 	// convert image
-	switch a.subCommand.Name {
-	case SubCommandReverse.Name:
-		isVertical := flagBool(OptionVertical)
-		if isVertical {
-			c.ReverseY()
-		} else {
-			c.ReverseX()
+	if subcommand, ok := subcommands[a.subCommand.Name]; ok {
+		subcommand(c)
+	} else {
+		switch a.subCommand.Name {
+		case SubCommandPng.Name:
+			extension = imgedit.Png
+		case SubCommandJpeg.Name:
+			extension = imgedit.Jpeg
+		case SubCommandGif.Name:
+			extension = imgedit.Gif
 		}
-	case SubCommandResize.Name:
-		ratio := flagFloat64(OptionRatio)
-		width, height := int(flagUint(OptionWidth)), int(flagUint(OptionHeight))
-		if ratio != 0 {
-			c.ResizeRatio(ratio)
-		} else {
-			c.Resize(width, height)
-		}
-	case SubCommandTile.Name:
-		xLength, yLength := int(flagUint(OptionX)), int(flagUint(OptionY))
-		c.Tile(xLength, yLength)
-	case SubCommandTrim.Name:
-		left, top := int(flagUint(OptionLeft)), int(flagUint(OptionTop))
-		width, height := int(flagUint(OptionWidth)), int(flagUint(OptionHeight))
-		c.Trim(left, top, width, height)
-	case SubCommandGrayscale.Name:
-		c.Grayscale()
-	case SubCommandAddstring.Name:
-		left, top := int(flagUint(OptionLeft)), int(flagUint(OptionTop))
-		oTtf, oColor := flagString(OptionTtf), flagString(OptionColor)
-		size, text := float64(flagUint(OptionSize)), flagString(OptionText)
-		option := &imgedit.StringOptions{
-			Point: &image.Point{X: left, Y: top},
-			Font:  &imgedit.Font{TrueTypeFont: getTtf(oTtf), Size: size, Color: getColor(oColor)},
-		}
-		c.AddString(text, option)
-	case SubCommandPng.Name:
-		extension = imgedit.Png
-	case SubCommandJpeg.Name:
-		extension = imgedit.Jpeg
-	case SubCommandGif.Name:
-		extension = imgedit.Gif
 	}
 
 	// save image
@@ -92,6 +73,46 @@ func (a *App) Run() error {
 	}
 	fmt.Printf("save convert file: %s\n", outputPath)
 	return nil
+}
+
+func resize(c imgedit.FileConverter) {
+	if OptionRatio.Float64() != 0 {
+		c.ResizeRatio(OptionRatio.Float64())
+	} else {
+		c.Resize(OptionWidth.Int(), OptionHeight.Int())
+	}
+}
+
+func trim(c imgedit.FileConverter) {
+	c.Trim(OptionLeft.Int(), OptionTop.Int(), OptionWidth.Int(), OptionHeight.Int())
+}
+
+func reverse(c imgedit.FileConverter) {
+	if OptionVertical.Bool() {
+		c.ReverseY()
+	} else {
+		c.ReverseX()
+	}
+}
+
+func tile(c imgedit.FileConverter) {
+	c.Tile(OptionX.Int(), OptionY.Int())
+}
+
+func grayscale(c imgedit.FileConverter) {
+	c.Grayscale()
+}
+
+func filter(c imgedit.FileConverter) {
+	c.Filter(getModel(OptionMode.String()))
+}
+
+func addstring(c imgedit.FileConverter) {
+	option := &imgedit.StringOptions{
+		Point: &image.Point{X: OptionLeft.Int(), Y: OptionTop.Int()},
+		Font:  &imgedit.Font{TrueTypeFont: getTtf(OptionTtf.String()), Size: OptionSize.Float64(), Color: getColor(OptionColor.String())},
+	}
+	c.AddString(OptionText.String(), option)
 }
 
 func getTtf(ttfPath string) *truetype.Font {
@@ -125,20 +146,15 @@ func getColor(colorString string) color.Color {
 	}
 }
 
-func flagUint(option Option) uint {
-	return flag.Lookup(option.Name()).Value.(flag.Getter).Get().(uint)
-}
-
-func flagFloat64(option Option) float64 {
-	return flag.Lookup(option.Name()).Value.(flag.Getter).Get().(float64)
-}
-
-func flagBool(option Option) bool {
-	return flag.Lookup(option.Name()).Value.(flag.Getter).Get().(bool)
-}
-
-func flagString(option Option) string {
-	return flag.Lookup(option.Name()).Value.(flag.Getter).Get().(string)
+func getModel(modeString string) imgedit.FilterModel {
+	switch modeString {
+	case "gray":
+		return imgedit.GrayModel
+	case "sepia":
+		return imgedit.SepiaModel
+	default:
+		return nil
+	}
 }
 
 func (a *App) getOutputPath(extension imgedit.Extension) (string, error) {
