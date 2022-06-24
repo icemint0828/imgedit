@@ -1,6 +1,6 @@
 ---
-name: release check list
-about: check list to release new version
+name: Release check list
+about: Check list to release new version
 title: release [v1.x.x] check list
 labels: ''
 assignees: icemint0828
@@ -21,4 +21,4 @@ Please review the following tasks.
 `git push origin [v1.x.x]`  
 - [ ] Create release note according to CHANGELOG.md.
 - [ ] Attach binaries to release note.  
-make build
+`make build`
