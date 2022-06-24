@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 1.3.0 - 2022-06-24
+* Improve readme file(@pouriyajamshidi)
+* Add feature `addString`.
+* Add feature `tile`.
+* Add feature `filter`.
+
 ## Version 1.2.0 - 2022-06-20
 * Add file converter.
 
