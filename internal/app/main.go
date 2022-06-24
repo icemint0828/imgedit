@@ -29,6 +29,18 @@ func NewApp(subCommand *SubCommand, filePath string) *App {
 	}
 }
 
+type subcommand func(imgedit.FileConverter)
+
+var subcommands = map[string]subcommand{
+	"resize":    resize,
+	"trim":      trim,
+	"tile":      tile,
+	"reverse":   reverse,
+	"grayscale": grayscale,
+	"addstring": addstring,
+	"filter":    filter,
+}
+
 // Run edit the image
 func (a *App) Run() error {
 	// load image
@@ -36,41 +48,18 @@ func (a *App) Run() error {
 	if err != nil {
 		return err
 	}
-
 	// convert image
-	switch a.subCommand.Name {
-	case SubCommandReverse.Name:
-		if OptionVertical.Bool() {
-			c.ReverseY()
-		} else {
-			c.ReverseX()
+	if subcommand, ok := subcommands[a.subCommand.Name]; ok {
+		subcommand(c)
+	} else {
+		switch a.subCommand.Name {
+		case SubCommandPng.Name:
+			extension = imgedit.Png
+		case SubCommandJpeg.Name:
+			extension = imgedit.Jpeg
+		case SubCommandGif.Name:
+			extension = imgedit.Gif
 		}
-	case SubCommandResize.Name:
-		if OptionRatio.Float64() != 0 {
-			c.ResizeRatio(OptionRatio.Float64())
-		} else {
-			c.Resize(OptionWidth.Int(), OptionHeight.Int())
-		}
-	case SubCommandTile.Name:
-		c.Tile(OptionX.Int(), OptionY.Int())
-	case SubCommandTrim.Name:
-		c.Trim(OptionLeft.Int(), OptionTop.Int(), OptionWidth.Int(), OptionHeight.Int())
-	case SubCommandGrayscale.Name:
-		c.Grayscale()
-	case SubCommandFilter.Name:
-		c.Filter(getModel(OptionMode.String()))
-	case SubCommandAddstring.Name:
-		option := &imgedit.StringOptions{
-			Point: &image.Point{X: OptionLeft.Int(), Y: OptionTop.Int()},
-			Font:  &imgedit.Font{TrueTypeFont: getTtf(OptionTtf.String()), Size: OptionSize.Float64(), Color: getColor(OptionColor.String())},
-		}
-		c.AddString(OptionText.String(), option)
-	case SubCommandPng.Name:
-		extension = imgedit.Png
-	case SubCommandJpeg.Name:
-		extension = imgedit.Jpeg
-	case SubCommandGif.Name:
-		extension = imgedit.Gif
 	}
 
 	// save image
@@ -84,6 +73,46 @@ func (a *App) Run() error {
 	}
 	fmt.Printf("save convert file: %s\n", outputPath)
 	return nil
+}
+
+func resize(c imgedit.FileConverter) {
+	if OptionRatio.Float64() != 0 {
+		c.ResizeRatio(OptionRatio.Float64())
+	} else {
+		c.Resize(OptionWidth.Int(), OptionHeight.Int())
+	}
+}
+
+func trim(c imgedit.FileConverter) {
+	c.Trim(OptionLeft.Int(), OptionTop.Int(), OptionWidth.Int(), OptionHeight.Int())
+}
+
+func reverse(c imgedit.FileConverter) {
+	if OptionVertical.Bool() {
+		c.ReverseY()
+	} else {
+		c.ReverseX()
+	}
+}
+
+func tile(c imgedit.FileConverter) {
+	c.Tile(OptionX.Int(), OptionY.Int())
+}
+
+func grayscale(c imgedit.FileConverter) {
+	c.Grayscale()
+}
+
+func filter(c imgedit.FileConverter) {
+	c.Filter(getModel(OptionMode.String()))
+}
+
+func addstring(c imgedit.FileConverter) {
+	option := &imgedit.StringOptions{
+		Point: &image.Point{X: OptionLeft.Int(), Y: OptionTop.Int()},
+		Font:  &imgedit.Font{TrueTypeFont: getTtf(OptionTtf.String()), Size: OptionSize.Float64(), Color: getColor(OptionColor.String())},
+	}
+	c.AddString(OptionText.String(), option)
 }
 
 func getTtf(ttfPath string) *truetype.Font {
