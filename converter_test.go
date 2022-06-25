@@ -22,7 +22,8 @@ const (
 	SrcGifImagePath    = "assets/image/srcImage.gif"
 	SrcJpegImagePath   = "assets/image/srcImage.jpeg"
 	SrcPngImagePath    = "assets/image/srcImage.png"
-	AlphaImagePath     = "assets/image/alphaImage.png"
+	AlphaPngImagePath  = "assets/image/alphaImage.png"
+	AlphaGifImagePath  = "assets/image/alphaImage.gif"
 	DstPngImagePath    = "assets/image/dstImage.png"
 	DstJpegImagePath   = "assets/image/dstImage.jpeg"
 	DstGifImagePath    = "assets/image/dstImage.gif"
@@ -71,8 +72,8 @@ func GetGifImage() image.Image {
 	return img
 }
 
-func GetAlphaImage() image.Image {
-	p, err := os.Open(AlphaImagePath)
+func GetAlphaPngImage() image.Image {
+	p, err := os.Open(AlphaPngImagePath)
 	if err != nil {
 		panic(err)
 	}
@@ -85,7 +86,21 @@ func GetAlphaImage() image.Image {
 	return img
 }
 
-func SaveTestImage(img image.Image) {
+func GetAlphaGifImage() image.Image {
+	p, err := os.Open(AlphaGifImagePath)
+	if err != nil {
+		panic(err)
+	}
+	defer p.Close()
+
+	img, err := gif.Decode(p)
+	if err != nil {
+		panic(err)
+	}
+	return img
+}
+
+func SaveTestImageAsPng(img image.Image) {
 	p, err := os.Create(DstPngImagePath)
 	if err != nil {
 		panic(err)
@@ -150,7 +165,7 @@ func Test_converter_Resize(t *testing.T) {
 			img := c.Convert()
 			assert.Equal(t, img.Bounds().Dx(), tt.args.resizeX)
 			assert.Equal(t, img.Bounds().Dy(), tt.args.resizeX)
-			SaveTestImage(img)
+			SaveTestImageAsPng(img)
 		})
 	}
 }
@@ -174,7 +189,7 @@ func Test_converter_ResizeRatio(t *testing.T) {
 		},
 		{
 			name:   "alpha",
-			fields: fields{Image: GetAlphaImage()},
+			fields: fields{Image: GetAlphaPngImage()},
 			args:   args{ratio: 0.3},
 		},
 	}
@@ -187,7 +202,7 @@ func Test_converter_ResizeRatio(t *testing.T) {
 			img := c.Convert()
 			assert.Equal(t, img.Bounds().Dx(), int(math.Round(float64(tt.fields.Image.Bounds().Dx())*tt.args.ratio)))
 			assert.Equal(t, img.Bounds().Dy(), int(math.Round(float64(tt.fields.Image.Bounds().Dy())*tt.args.ratio)))
-			SaveTestImage(img)
+			SaveTestImageAsPng(img)
 		})
 	}
 }
@@ -222,7 +237,7 @@ func Test_converter_Trim(t *testing.T) {
 			img := c.Convert()
 			assert.Equal(t, img.Bounds().Dx(), tt.args.width)
 			assert.Equal(t, img.Bounds().Dy(), tt.args.height)
-			SaveTestImage(img)
+			SaveTestImageAsPng(img)
 		})
 	}
 }
@@ -249,7 +264,7 @@ func Test_converter_ReverseX(t *testing.T) {
 			img := c.Convert()
 			assert.Equal(t, img.Bounds().Dx(), tt.fields.Image.Bounds().Dx())
 			assert.Equal(t, img.Bounds().Dy(), tt.fields.Image.Bounds().Dy())
-			SaveTestImage(img)
+			SaveTestImageAsPng(img)
 		})
 	}
 }
@@ -276,7 +291,7 @@ func Test_converter_ReverseY(t *testing.T) {
 			img := c.Convert()
 			assert.Equal(t, img.Bounds().Dx(), tt.fields.Image.Bounds().Dx())
 			assert.Equal(t, img.Bounds().Dy(), tt.fields.Image.Bounds().Dy())
-			SaveTestImage(img)
+			SaveTestImageAsPng(img)
 		})
 	}
 }
@@ -295,7 +310,7 @@ func Test_converter_Grayscale(t *testing.T) {
 		},
 		{
 			name:   "alpha",
-			fields: fields{Image: GetAlphaImage()},
+			fields: fields{Image: GetAlphaPngImage()},
 		},
 	}
 	for _, tt := range tests {
@@ -307,7 +322,7 @@ func Test_converter_Grayscale(t *testing.T) {
 			img := c.Convert()
 			assert.Equal(t, img.Bounds().Dx(), tt.fields.Image.Bounds().Dx())
 			assert.Equal(t, img.Bounds().Dy(), tt.fields.Image.Bounds().Dy())
-			SaveTestImage(img)
+			SaveTestImageAsPng(img)
 		})
 	}
 }
@@ -335,8 +350,8 @@ func Test_converter_Filter(t *testing.T) {
 			args:   args{SepiaModel},
 		},
 		{
-			name:   "alpha",
-			fields: fields{Image: GetAlphaImage()},
+			name:   "alpha png",
+			fields: fields{Image: GetAlphaPngImage()},
 			args:   args{SepiaModel},
 		},
 		{
@@ -354,7 +369,7 @@ func Test_converter_Filter(t *testing.T) {
 			img := c.Convert()
 			assert.Equal(t, img.Bounds().Dx(), tt.fields.Image.Bounds().Dx())
 			assert.Equal(t, img.Bounds().Dy(), tt.fields.Image.Bounds().Dy())
-			SaveTestImage(img)
+			SaveTestImageAsPng(img)
 		})
 	}
 }
@@ -444,7 +459,7 @@ func Test_converter_AddString(t *testing.T) {
 			img := c.Convert()
 			assert.Equal(t, img.Bounds().Dx(), tt.fields.Image.Bounds().Dx())
 			assert.Equal(t, img.Bounds().Dy(), tt.fields.Image.Bounds().Dy())
-			SaveTestImage(img)
+			SaveTestImageAsPng(img)
 		})
 	}
 }
@@ -477,7 +492,7 @@ func Test_converter_Tile(t *testing.T) {
 			img := c.Convert()
 			assert.Equal(t, img.Bounds().Dx(), tt.fields.Image.Bounds().Dx()*tt.args.xLength)
 			assert.Equal(t, img.Bounds().Dy(), tt.fields.Image.Bounds().Dy()*tt.args.yLength)
-			SaveTestImage(img)
+			SaveTestImageAsPng(img)
 		})
 	}
 }

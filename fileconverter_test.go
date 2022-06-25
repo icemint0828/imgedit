@@ -135,6 +135,18 @@ func Test_fileConverter_SaveAs(t *testing.T) {
 			args:    args{dstPath: DstGifImagePath, extension: Gif},
 			wantErr: false,
 		},
+		{
+			name:    "alpha png to gif",
+			fields:  fields{converter: &converter{Image: GetAlphaPngImage()}},
+			args:    args{dstPath: DstGifImagePath, extension: Gif},
+			wantErr: false,
+		},
+		{
+			name:    "alpha gif to gif",
+			fields:  fields{converter: &converter{Image: GetAlphaGifImage()}},
+			args:    args{dstPath: DstGifImagePath, extension: Gif},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
