@@ -208,11 +208,12 @@ func Test_gifEncode(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{
-			name:    "out of bounds size",
-			args:    args{m: image.NewRGBA(image.Rect(0, 0, 1<<16+1, 1<<16+1)), o: nil},
-			wantErr: true,
-		},
+		// fatal error: runtime: out of memory on GitHub
+		//{
+		//	name:    "out of bounds size",
+		//	args:    args{m: image.NewRGBA(image.Rect(0, 0, 1<<16+1, 1<<16+1)), o: nil},
+		//	wantErr: true,
+		//},
 		{
 			name:    "over opts.NumColors",
 			args:    args{m: image.NewRGBA(image.Rect(0, 0, 100, 100)), o: &gif.Options{NumColors: 257}},
