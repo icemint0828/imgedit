@@ -1,6 +1,9 @@
 package imgedit
 
 import (
+	"bytes"
+	"image"
+	"image/gif"
 	"reflect"
 	"testing"
 )
@@ -135,6 +138,18 @@ func Test_fileConverter_SaveAs(t *testing.T) {
 			args:    args{dstPath: DstGifImagePath, extension: Gif},
 			wantErr: false,
 		},
+		{
+			name:    "alpha png to gif",
+			fields:  fields{converter: &converter{Image: GetAlphaPngImage()}},
+			args:    args{dstPath: DstGifImagePath, extension: Gif},
+			wantErr: false,
+		},
+		{
+			name:    "alpha gif to gif",
+			fields:  fields{converter: &converter{Image: GetAlphaGifImage()}},
+			args:    args{dstPath: DstGifImagePath, extension: Gif},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -181,4 +196,38 @@ func TestFileEdit(t *testing.T) {
 	c, _, _ := NewFileConverter(SrcPngImagePath)
 	c.Grayscale()
 	_ = c.SaveAs(DstPngImagePath, Png)
+}
+
+func Test_gifEncode(t *testing.T) {
+	type args struct {
+		m image.Image
+		o *gif.Options
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		// fatal error: runtime: out of memory on GitHub
+		//{
+		//	name:    "out of bounds size",
+		//	args:    args{m: image.NewRGBA(image.Rect(0, 0, 1<<16+1, 1<<16+1)), o: nil},
+		//	wantErr: true,
+		//},
+		{
+			name:    "over opts.NumColors",
+			args:    args{m: image.NewRGBA(image.Rect(0, 0, 100, 100)), o: &gif.Options{NumColors: 257}},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &bytes.Buffer{}
+			err := gifEncode(w, tt.args.m, tt.args.o)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("gifEncode() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
 }
