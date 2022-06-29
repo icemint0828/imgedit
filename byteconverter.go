@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"image/color/palette"
 	"image/draw"
 	"image/gif"
 	"image/jpeg"
 	"image/png"
 	"io"
+	"math"
+	"sort"
 )
 
 // Extension is image file extension
@@ -108,27 +109,8 @@ func gifEncode(w io.Writer, m image.Image, o *gif.Options) error {
 		opts.Drawer = draw.FloydSteinberg
 	}
 
-	// replace unused color as transparent color
-	myPalette := make([]color.Color, opts.NumColors)
-	copy(myPalette, palette.Plan9[:opts.NumColors])
-	dst := image.NewPaletted(b, myPalette)
-
-	usedColors := map[color.Color]bool{}
-	for x := b.Min.X; x < b.Max.X; x++ {
-		for y := b.Min.Y; y < b.Max.Y; y++ {
-			usedColor := dst.ColorModel().Convert(m.At(x, y))
-			if _, ok := usedColors[usedColor]; !ok {
-				usedColors[usedColor] = true
-			}
-		}
-	}
-	for i, usedColor := range myPalette {
-		if _, ok := usedColors[usedColor]; !ok {
-			myPalette[i] = image.Transparent
-			break
-		}
-	}
-	opts.Drawer.Draw(dst, b, m, b.Min)
+	dst := image.NewPaletted(b, createMyPalette(m, o.NumColors))
+	myDraw(dst, m)
 	return gif.EncodeAll(w, &gif.GIF{
 		Image: []*image.Paletted{dst},
 		Delay: []int{0},
@@ -138,4 +120,69 @@ func gifEncode(w io.Writer, m image.Image, o *gif.Options) error {
 			Height:     b.Dy(),
 		},
 	})
+}
+
+type sortedColors map[color.Color]uint
+
+func (s sortedColors) Sort() []color.Color {
+	type sortedColor struct {
+		color.Color
+		Count uint
+	}
+	var sortedColors []sortedColor
+	for c, count := range s {
+		sortedColors = append(sortedColors, sortedColor{Color: c, Count: count})
+	}
+	sort.SliceStable(sortedColors, func(i, j int) bool { return sortedColors[i].Count > sortedColors[j].Count })
+
+	var colors []color.Color
+	for _, sortedColor := range sortedColors {
+		colors = append(colors, sortedColor.Color)
+	}
+	return colors
+}
+
+// createMyPalette create a palette with efficient colors to represent the image
+func createMyPalette(m image.Image, numColors int) []color.Color {
+	b := m.Bounds()
+	transparentColors := sortedColors{}
+	usedColors := sortedColors{}
+	for x := b.Min.X; x < b.Max.X; x++ {
+		for y := b.Min.Y; y < b.Max.Y; y++ {
+			// transparent colors are handled separately. draw.sqDiff would be
+			// a meaningless value in transparent colors. e.g(0xffff, 0xffff, 0xffff, 0)
+			c := m.At(x, y)
+			_, _, _, a := c.RGBA()
+			if a == 0 {
+				transparentColors[c]++
+			}
+			if a == math.MaxUint16 {
+				usedColors[c]++
+			}
+		}
+	}
+
+	var myPalette []color.Color
+	colors := append(transparentColors.Sort(), usedColors.Sort()...)
+	for _, c := range colors {
+		if len(myPalette) >= numColors {
+			break
+		}
+		myPalette = append(myPalette, c)
+	}
+	return myPalette
+}
+
+func myDraw(dst *image.Paletted, src image.Image) {
+	b := src.Bounds()
+	for x := b.Min.X; x < b.Max.X; x++ {
+		for y := b.Min.Y; y < b.Max.Y; y++ {
+			c := src.At(x, y)
+			_, _, _, a := c.RGBA()
+			if a < math.MaxUint16 {
+				c = dst.Palette[0]
+			}
+			dst.Set(x, y, c)
+		}
+	}
 }
