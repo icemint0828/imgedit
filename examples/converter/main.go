@@ -1,24 +1,13 @@
 package main
 
 import (
-	"github.com/icemint0828/imgedit"
 	"image/png"
 	"os"
+
+	"github.com/icemint0828/imgedit"
 )
 
 func main() {
-
-	// FileConverter
-	fc, _, err := imgedit.NewFileConverter("examples/srcImage.png")
-	if err != nil {
-		panic(err)
-	}
-	fc.Filter(imgedit.GrayModel)
-	err = fc.SaveAs("examples/dstImage.png", imgedit.Png)
-	if err != nil {
-		panic(err)
-	}
-
 	// Converter
 	srcFile, err := os.Open("examples/srcImage.png")
 	if err != nil {
@@ -34,7 +23,7 @@ func main() {
 	c.Resize(500, 500)
 	dstImage := c.Convert()
 
-	dstFile, err := os.Create("examples/dstImage.png")
+	dstFile, err := os.Create("examples/dstImage.gif")
 	if err != nil {
 		panic(err)
 	}

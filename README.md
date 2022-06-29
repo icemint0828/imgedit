@@ -83,6 +83,42 @@ func main() {
 }
 ```
 
+It can also work with just convert bytes through io.Writer and io.Reader.
+
+```go
+package main
+
+import (
+	"bytes"
+	"os"
+
+	"github.com/icemint0828/imgedit"
+)
+
+func main() {
+	srcFile, err := os.Open("srcImage.png")
+	if err != nil {
+		panic(err)
+	}
+	defer srcFile.Close()
+
+	bc, _, err := imgedit.NewByteConverter(srcFile)
+	bc.ResizeRatio(0.5)
+
+	buffer := bytes.NewBuffer([]byte{})
+	_ = bc.WriteAs(buffer, imgedit.Jpeg)
+
+	dstFile, err := os.Create("dstImage.png")
+	if err != nil {
+		panic(err)
+	}
+	defer dstFile.Close()
+
+	_, _ = buffer.WriteTo(dstFile)
+}
+
+```
+
 It can also work with just convert image.
 
 ```go
@@ -158,7 +194,7 @@ You can also use a [sample GUI tool](https://github.com/icemint0828/imgedit-wasm
 
 ## Known Limitations
 
-- Transparency processing in `gif` files is not working well yet.
+- Smooth color conversion in `gif` files is not working well yet.
 
 ## Contributing
 

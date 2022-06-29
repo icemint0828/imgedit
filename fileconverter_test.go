@@ -1,9 +1,6 @@
 package imgedit
 
 import (
-	"bytes"
-	"image"
-	"image/gif"
 	"reflect"
 	"testing"
 )
@@ -22,7 +19,7 @@ func TestNewFileConverter(t *testing.T) {
 		{
 			name:          "normal",
 			args:          args{srcPath: SrcPngImagePath},
-			want:          &fileConverter{converter: &converter{Image: GetPngImage()}},
+			want:          &fileConverter{byteConverter: &byteConverter{&converter{Image: GetPngImage()}}},
 			wantExtension: Png,
 			wantErr:       false,
 		},
@@ -60,7 +57,7 @@ func TestNewFileConverter(t *testing.T) {
 
 func Test_fileConverter_SaveAs(t *testing.T) {
 	type fields struct {
-		converter *converter
+		byteConverter *byteConverter
 	}
 	type args struct {
 		dstPath   string
@@ -74,79 +71,79 @@ func Test_fileConverter_SaveAs(t *testing.T) {
 	}{
 		{
 			name:    "missing directory",
-			fields:  fields{converter: &converter{Image: GetPngImage()}},
+			fields:  fields{byteConverter: &byteConverter{&converter{Image: GetPngImage()}}},
 			args:    args{dstPath: MissingDirPath, extension: Png},
 			wantErr: true,
 		},
 		{
 			name:    "unsupported extension",
-			fields:  fields{converter: &converter{Image: GetPngImage()}},
+			fields:  fields{byteConverter: &byteConverter{&converter{Image: GetPngImage()}}},
 			args:    args{dstPath: DstPngImagePath, extension: Extension("unsupported")},
 			wantErr: true,
 		},
 		{
 			name:    "png to png",
-			fields:  fields{converter: &converter{Image: GetPngImage()}},
+			fields:  fields{byteConverter: &byteConverter{&converter{Image: GetPngImage()}}},
 			args:    args{dstPath: DstPngImagePath, extension: Png},
 			wantErr: false,
 		},
 		{
 			name:    "jpeg to png",
-			fields:  fields{converter: &converter{Image: GetJpegImage()}},
+			fields:  fields{byteConverter: &byteConverter{&converter{Image: GetJpegImage()}}},
 			args:    args{dstPath: DstPngImagePath, extension: Png},
 			wantErr: false,
 		},
 		{
 			name:    "gif to png",
-			fields:  fields{converter: &converter{Image: GetGifImage()}},
+			fields:  fields{byteConverter: &byteConverter{&converter{Image: GetGifImage()}}},
 			args:    args{dstPath: DstPngImagePath, extension: Png},
 			wantErr: false,
 		},
 		{
 			name:    "png to jpeg",
-			fields:  fields{converter: &converter{Image: GetPngImage()}},
+			fields:  fields{byteConverter: &byteConverter{&converter{Image: GetPngImage()}}},
 			args:    args{dstPath: DstJpegImagePath, extension: Jpeg},
 			wantErr: false,
 		},
 		{
 			name:    "jpeg to jpeg",
-			fields:  fields{converter: &converter{Image: GetJpegImage()}},
+			fields:  fields{byteConverter: &byteConverter{&converter{Image: GetJpegImage()}}},
 			args:    args{dstPath: DstJpegImagePath, extension: Jpeg},
 			wantErr: false,
 		},
 		{
 			name:    "gif to jpeg",
-			fields:  fields{converter: &converter{Image: GetGifImage()}},
+			fields:  fields{byteConverter: &byteConverter{&converter{Image: GetGifImage()}}},
 			args:    args{dstPath: DstJpegImagePath, extension: Jpeg},
 			wantErr: false,
 		},
 		{
 			name:    "png to gif",
-			fields:  fields{converter: &converter{Image: GetPngImage()}},
+			fields:  fields{byteConverter: &byteConverter{&converter{Image: GetPngImage()}}},
 			args:    args{dstPath: DstGifImagePath, extension: Gif},
 			wantErr: false,
 		},
 		{
 			name:    "jpeg to gif",
-			fields:  fields{converter: &converter{Image: GetJpegImage()}},
+			fields:  fields{byteConverter: &byteConverter{&converter{Image: GetJpegImage()}}},
 			args:    args{dstPath: DstGifImagePath, extension: Gif},
 			wantErr: false,
 		},
 		{
 			name:    "gif to gif",
-			fields:  fields{converter: &converter{Image: GetGifImage()}},
+			fields:  fields{byteConverter: &byteConverter{&converter{Image: GetGifImage()}}},
 			args:    args{dstPath: DstGifImagePath, extension: Gif},
 			wantErr: false,
 		},
 		{
 			name:    "alpha png to gif",
-			fields:  fields{converter: &converter{Image: GetAlphaPngImage()}},
+			fields:  fields{byteConverter: &byteConverter{&converter{Image: GetAlphaPngImage()}}},
 			args:    args{dstPath: DstGifImagePath, extension: Gif},
 			wantErr: false,
 		},
 		{
 			name:    "alpha gif to gif",
-			fields:  fields{converter: &converter{Image: GetAlphaGifImage()}},
+			fields:  fields{byteConverter: &byteConverter{&converter{Image: GetAlphaGifImage()}}},
 			args:    args{dstPath: DstGifImagePath, extension: Gif},
 			wantErr: false,
 		},
@@ -154,39 +151,10 @@ func Test_fileConverter_SaveAs(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			p := &fileConverter{
-				converter: tt.fields.converter,
+				byteConverter: tt.fields.byteConverter,
 			}
 			if err := p.SaveAs(tt.args.dstPath, tt.args.extension); (err != nil) != tt.wantErr {
 				t.Errorf("SaveAs() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
-func TestSupportedExtension(t *testing.T) {
-	type args struct {
-		extension Extension
-	}
-	tests := []struct {
-		name string
-		args args
-		want bool
-	}{
-		{
-			name: "normal",
-			args: args{extension: Png},
-			want: true,
-		},
-		{
-			name: "unsupported extension",
-			args: args{extension: Extension("unsupported")},
-			want: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := SupportedExtension(tt.args.extension); got != tt.want {
-				t.Errorf("SupportedExtension() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -196,38 +164,4 @@ func TestFileEdit(t *testing.T) {
 	c, _, _ := NewFileConverter(SrcPngImagePath)
 	c.Grayscale()
 	_ = c.SaveAs(DstPngImagePath, Png)
-}
-
-func Test_gifEncode(t *testing.T) {
-	type args struct {
-		m image.Image
-		o *gif.Options
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		// fatal error: runtime: out of memory on GitHub
-		//{
-		//	name:    "out of bounds size",
-		//	args:    args{m: image.NewRGBA(image.Rect(0, 0, 1<<16+1, 1<<16+1)), o: nil},
-		//	wantErr: true,
-		//},
-		{
-			name:    "over opts.NumColors",
-			args:    args{m: image.NewRGBA(image.Rect(0, 0, 100, 100)), o: &gif.Options{NumColors: 257}},
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			w := &bytes.Buffer{}
-			err := gifEncode(w, tt.args.m, tt.args.o)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("gifEncode() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-		})
-	}
 }
