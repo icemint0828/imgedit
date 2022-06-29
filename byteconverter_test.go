@@ -47,40 +47,6 @@ func TestNewByteConverter(t *testing.T) {
 	}
 }
 
-func Test_byteConverter_WriteAs(t *testing.T) {
-	type fields struct {
-		converter *converter
-	}
-	type args struct {
-		extension Extension
-	}
-	tests := []struct {
-		name       string
-		fields     fields
-		args       args
-		wantWriter string
-		wantErr    bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			b := &byteConverter{
-				converter: tt.fields.converter,
-			}
-			writer := &bytes.Buffer{}
-			err := b.WriteAs(writer, tt.args.extension)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("WriteAs() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if gotWriter := writer.String(); gotWriter != tt.wantWriter {
-				t.Errorf("WriteAs() gotWriter = %v, want %v", gotWriter, tt.wantWriter)
-			}
-		})
-	}
-}
-
 func TestSupportedExtension(t *testing.T) {
 	type args struct {
 		extension Extension
