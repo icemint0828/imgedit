@@ -22,3 +22,4 @@ Please review the following tasks.
 - [ ] Create release note according to CHANGELOG.md.
 - [ ] Attach binaries to release note.  
 `make build`
+- [ ] Update [homebrew-tap](https://github.com/icemint0828/homebrew-tap) file.
