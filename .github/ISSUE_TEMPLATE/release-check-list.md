@@ -13,6 +13,7 @@ Please review the following tasks.
 - [ ] Cut out the working branch.  
 `git checkout -b release-[v1.x.x]`
 - [ ] Update the version of cmd/main.go.
+- [ ] Update the version of README.md.
 - [ ] Update CHANGELOG.md.
 - [ ] Push changes related to the release.  
 `git push origin`
