@@ -61,6 +61,10 @@
 
 ## Usage (Package)
 
+```shell
+$ go get github.com/icemint0828/imgedit@v1.4.0
+```
+
 An example with file conversion is as follows.
 
 ```go
@@ -171,7 +175,7 @@ You can download the executable file from the link below.
 Or if you can use `brew` on mac OS.
 
 ```shell
-brew install icemint0828/tap/imgedit
+$ brew install icemint0828/tap/imgedit
 ```
 
 For more information, please use the help command:

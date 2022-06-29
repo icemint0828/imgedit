@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.4.0 - 2022-06-29
+* Add feature `ByteConverter`.
+* Fix transparency processing bug in gif images.
+* CLI can now be installed via brew.
+
 ## Version 1.3.0 - 2022-06-24
 * Improve readme file(@pouriyajamshidi)
 * Add feature `addString`.
