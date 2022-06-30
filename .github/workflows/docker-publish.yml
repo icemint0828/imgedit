@@ -19,14 +19,8 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  reusable_workflow_go:
-  
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/workflows/go.yaml
 
   build:
-    needs: reusable_workflow_go
     runs-on: ubuntu-latest
     permissions:
       contents: read
