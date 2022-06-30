@@ -34,6 +34,10 @@ func main() {
 	// validation for flag and args
 	args := flag.Args()
 
+	if len(args) == 0 {
+		exitOnError(nil)
+	}
+
 	if len(args) != 2 {
 		exitOnError(errors.New("argument is missing"))
 	}
@@ -59,7 +63,9 @@ func main() {
 }
 
 func exitOnError(err error) {
-	fmt.Println(err.Error())
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 	fmt.Println("see: imgedit -help")
 	os.Exit(1)
 }
