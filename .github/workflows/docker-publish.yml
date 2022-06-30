@@ -63,6 +63,14 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      - name: Setting Go version
+        uses: actions/setup-go@v3.2.0
+        with:
+          go-version-file: "go.mod"
+
+      - name: build Docker image using Makefile
+        run: make gitHubActions
+
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image
