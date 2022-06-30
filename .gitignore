@@ -10,6 +10,9 @@ execuatables/
 # mac os
 .DS_Store
 
+# mye shell script
+sha256.sh
+
 # output test files
 assets/image/dstImage.png
 assets/image/dstImage.jpeg
