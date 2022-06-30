@@ -19,8 +19,14 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build:
+  reusable_workflow_go:
+  
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/workflows/Go
 
+  build:
+    needs: reusable_workflow_go
     runs-on: ubuntu-latest
     permissions:
       contents: read
