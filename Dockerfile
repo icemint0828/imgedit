@@ -1,3 +1,4 @@
 FROM scratch
 ADD imgedit /usr/bin/imgedit
-ENTRYPOINT ["/mnt/imgedit"]
+WORKDIR /mnt
+ENTRYPOINT ["imgedit"]
