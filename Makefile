@@ -65,3 +65,8 @@ vet:
 test:
 	@echo "[+] Running tests"
 	@go test
+
+gitHubActions:
+	@echo "[+] Building container image - GitHub Actions"
+	@env GOOS=linux CGO_ENABLED=0 go build --ldflags '-s -w' -o imgedit cmd/main.go && chmod +x imgedit
+	@echo "[+] Done"
