@@ -23,7 +23,7 @@ jobs:
   
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/Go
+      - uses: ./.github/workflows/go.yaml
 
   build:
     needs: reusable_workflow_go
