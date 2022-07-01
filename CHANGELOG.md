@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.5.0 - 2022-07-02
+* Combine `ReverseX` and `ReverseY` into `Reverse`.
+* Add docker execution for `CLI`.
+* Fix the smoothly color of the gif.
+
 ## Version 1.4.0 - 2022-06-29
 * Add feature `ByteConverter`.
 * Fix transparency processing bug in gif images.
