@@ -62,7 +62,7 @@
 ## Usage (Package)
 
 ```shell
-$ go get github.com/icemint0828/imgedit@v1.4.0
+$ go get github.com/icemint0828/imgedit@v1.5.0
 ```
 
 An example with file conversion is as follows.
@@ -204,10 +204,6 @@ $ docker run --rm -e WD=$(pwd) -v $(pwd):/mnt ghcr.io/icemint0828/imgedit:latest
 You can also use a [sample GUI tool](https://github.com/icemint0828/imgedit-wasm) that is created with `WASM` by this package.
 
 - ### Check out the [image edit tool](https://icemint0828.github.io/imgedit-wasm/)
-
-## Known Limitations
-
-- Smooth color conversion in `gif` files is not working well yet.
 
 ## Contributing
 
