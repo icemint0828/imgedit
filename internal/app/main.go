@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	EnvWd = "IMGEDIT_WD"
+	EnvWd = "WD"
 )
 
 type App struct {
