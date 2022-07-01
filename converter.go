@@ -30,7 +30,10 @@ type Converter interface {
 	Resize(x, y int)
 	ResizeRatio(ratio float64)
 	Trim(left, top, width, height int)
+	Reverse(isHorizon bool)
+	// Deprecated: Replace Reverse(true).
 	ReverseX()
+	// Deprecated: Replace Reverse(false).
 	ReverseY()
 	Filter(filterModel FilterModel)
 	// Deprecated: Replace Filter(imgedit.GrayModel).
@@ -90,32 +93,40 @@ func (c *converter) Trim(left, top, width, height int) {
 	c.Image = dst
 }
 
-// ReverseX reverse the image about horizon
-func (c *converter) ReverseX() {
+// Reverse flips the image
+func (c *converter) Reverse(isHorizon bool) {
 	dst := image.NewRGBA(image.Rect(0, 0, c.Bounds().Dx(), c.Bounds().Dy()))
 	srcSize := c.Bounds().Size()
 	dstSize := dst.Bounds().Size()
+	var f func(int, int) (int, int)
+	if isHorizon {
+		f = func(x int, y int) (int, int) {
+			return srcSize.X - x, y
+		}
+	} else {
+		f = func(x int, y int) (int, int) {
+			return x, srcSize.Y - y
+		}
+	}
 	for x := 0; x < dstSize.X; x++ {
 		for y := 0; y < dstSize.Y; y++ {
-			srcX, srcY := srcSize.X-x, y
+			srcX, srcY := f(x, y)
 			dst.Set(x, y, c.Image.At(srcX, srcY))
 		}
 	}
 	c.Image = dst
 }
 
+// ReverseX reverse the image about horizon
+// Deprecated: Replace Reverse(true).
+func (c *converter) ReverseX() {
+	c.Reverse(true)
+}
+
 // ReverseY reverse the image about vertical
+// Deprecated: Replace Reverse(false).
 func (c *converter) ReverseY() {
-	dst := image.NewRGBA(image.Rect(0, 0, c.Bounds().Dx(), c.Bounds().Dy()))
-	srcSize := c.Bounds().Size()
-	dstSize := dst.Bounds().Size()
-	for x := 0; x < srcSize.X; x++ {
-		for y := 0; y < srcSize.Y; y++ {
-			srcX, srcY := x, dstSize.Y-y
-			dst.Set(x, y, c.Image.At(srcX, srcY))
-		}
-	}
-	c.Image = dst
+	c.Reverse(false)
 }
 
 // Grayscale change the image color to grayscale
