@@ -324,11 +324,11 @@ func drawString(dst draw.Image, drawer *font.Drawer, outlineDrawer *font.Drawer,
 	}
 }
 
-func (c *converter) Tile(xLength, yLength int) {
-	dst := image.NewRGBA(image.Rect(0, 0, c.Bounds().Dx()*xLength, c.Bounds().Dy()*yLength))
+func (c *converter) Tile(cols, rows int) {
+	dst := image.NewRGBA(image.Rect(0, 0, c.Bounds().Dx()*cols, c.Bounds().Dy()*rows))
 	srcSize := c.Bounds().Size()
-	for xLen := 0; xLen < xLength; xLen++ {
-		for yLen := 0; yLen < yLength; yLen++ {
+	for xLen := 0; xLen < cols; xLen++ {
+		for yLen := 0; yLen < rows; yLen++ {
 			for x := 0; x < srcSize.X; x++ {
 				for y := 0; y < srcSize.Y; y++ {
 					dst.Set(x+srcSize.X*xLen, y+srcSize.Y*yLen, c.Image.At(x, y))
