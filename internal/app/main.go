@@ -13,6 +13,10 @@ import (
 	"github.com/icemint0828/imgedit"
 )
 
+const (
+	EnvWd = "IMGEDIT_WD"
+)
+
 type App struct {
 	subCommand    *SubCommand
 	filePath      string
@@ -63,7 +67,7 @@ func (a *App) Run() error {
 	}
 
 	// save image
-	outputPath, err := a.getOutputPath(extension)
+	outputPath, displayPath, err := a.getOutputPath(extension)
 	if err != nil {
 		return err
 	}
@@ -71,7 +75,7 @@ func (a *App) Run() error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("save convert file: %s\n", outputPath)
+	fmt.Printf("save convert file: %s\n", displayPath)
 	return nil
 }
 
@@ -157,10 +161,12 @@ func getModel(modeString string) imgedit.FilterModel {
 	}
 }
 
-func (a *App) getOutputPath(extension imgedit.Extension) (string, error) {
+func (a *App) getOutputPath(extension imgedit.Extension) (string, string, error) {
+	// Directory of the host when started by docker
+	hostDir := os.Getenv(EnvWd)
 	outputDir, err := os.Getwd()
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	var outputFileName string
 	if a.fileExtension == "" {
@@ -168,5 +174,11 @@ func (a *App) getOutputPath(extension imgedit.Extension) (string, error) {
 	} else {
 		outputFileName = strings.Replace(filepath.Base(a.filePath), a.fileExtension, "_imgedit."+string(extension), 1)
 	}
-	return path.Join(outputDir, outputFileName), nil
+
+	outputPath := path.Join(outputDir, outputFileName)
+	displayPath := outputPath
+	if hostDir != "" {
+		displayPath = path.Join(hostDir, outputFileName)
+	}
+	return outputPath, displayPath, nil
 }
