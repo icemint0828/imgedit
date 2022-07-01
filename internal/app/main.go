@@ -2,7 +2,6 @@ package app
 
 import (
 	"fmt"
-	"github.com/golang/freetype/truetype"
 	"image"
 	"image/color"
 	"os"
@@ -10,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/golang/freetype/truetype"
 	"github.com/icemint0828/imgedit"
 )
 
@@ -92,11 +92,7 @@ func trim(c imgedit.FileConverter) {
 }
 
 func reverse(c imgedit.FileConverter) {
-	if OptionVertical.Bool() {
-		c.ReverseY()
-	} else {
-		c.ReverseX()
-	}
+	c.Reverse(!OptionVertical.Bool())
 }
 
 func tile(c imgedit.FileConverter) {
@@ -104,7 +100,7 @@ func tile(c imgedit.FileConverter) {
 }
 
 func grayscale(c imgedit.FileConverter) {
-	c.Grayscale()
+	c.Filter(imgedit.GrayModel)
 }
 
 func filter(c imgedit.FileConverter) {

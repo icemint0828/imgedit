@@ -242,6 +242,43 @@ func Test_converter_Trim(t *testing.T) {
 	}
 }
 
+func Test_converter_Reverse(t *testing.T) {
+	type fields struct {
+		Image image.Image
+	}
+	type args struct {
+		isHorizon bool
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			name:   "horizon",
+			fields: fields{Image: GetPngImage()},
+			args:   args{isHorizon: true},
+		},
+		{
+			name:   "vertical",
+			fields: fields{Image: GetPngImage()},
+			args:   args{isHorizon: false},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &converter{
+				Image: tt.fields.Image,
+			}
+			c.Reverse(tt.args.isHorizon)
+			img := c.Convert()
+			assert.Equal(t, img.Bounds().Dx(), tt.fields.Image.Bounds().Dx())
+			assert.Equal(t, img.Bounds().Dy(), tt.fields.Image.Bounds().Dy())
+			SaveTestImageAsPng(img)
+		})
+	}
+}
+
 func Test_converter_ReverseX(t *testing.T) {
 	type fields struct {
 		Image image.Image
