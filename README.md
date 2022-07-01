@@ -181,14 +181,23 @@ $ brew install icemint0828/tap/imgedit
 For more information, please use the help command:
 
 ```shell
-imgedit -help
+$ imgedit -help
 ```
 
-## Supported Formats (CLI)
+## Usage (CLI on docker)
 
-- png
-- jpg, jpeg
-- gif
+You can also run the CLI on docker.
+This procedure can only convert files under the current working directory(WD).
+
+```shell
+$ docker run --rm -e WD=$(pwd) -v $(pwd):/mnt ghcr.io/icemint0828/imgedit:latest filter srcImage.png -mode gray
+```
+
+For more information, please use the help command:
+
+```shell
+$ docker run --rm -e WD=$(pwd) -v $(pwd):/mnt ghcr.io/icemint0828/imgedit:latest -help
+```
 
 ## Usage (GUI)
 
