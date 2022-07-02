@@ -5,20 +5,24 @@
 .golangci-lint.yaml
 
 # create zip for execuatable file
-execuatables/
+/execuatables/
 
 # mac os
 .DS_Store
 
-# mye shell script
+# output test files
+/assets/image/dstImage.png
+/assets/image/dstImage.jpeg
+/assets/image/dstImage.gif
+/examples/dstImage.png
+/examples/dstImage.jpeg
+/examples/dstImage.gif
+
+# my shell script
 sha256.sh
 
-# output test files
-assets/image/dstImage.png
-assets/image/dstImage.jpeg
-assets/image/dstImage.gif
-examples/dstImage.png
-examples/dstImage.jpeg
-examples/dstImage.gif
+# my article template
+/examples/articleTemplate.md
 
 !.gitkeep
+
