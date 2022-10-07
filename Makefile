@@ -15,7 +15,7 @@ build: clean check
 	@cp THIRD_PARTY_LICENCES $(EXEC_DIR)THIRD_PARTY_LICENCES
 	
 	@echo "[+] Building the Linux version"
-	@go build -ldflags "-s -w" -o $(EXEC_DIR)imgedit cmd/main.go
+	@env GOARCH=amd64 GOOS=linux go build -ldflags "-s -w" -o $(EXEC_DIR)imgedit cmd/main.go
 
 	@echo "[+] Packaging the Linux version"
 	@zip -j $(EXEC_DIR)imgedit_Linux.zip -r $(EXEC_DIR)imgedit $(EXEC_DIR)LICENSE $(EXEC_DIR)THIRD_PARTY_LICENCES > /dev/null
