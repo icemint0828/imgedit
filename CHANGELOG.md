@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 1.6.0 - 2022-10-07
+* support multiple lines for `AddString`.
+* Improve color argument for `CLI`.  
+You can use color code for argument too(like #FFFFFF).
+* Fix default position of addString to center for `CLI`.
+
 ## Version 1.5.0 - 2022-07-02
 * Combine `ReverseX` and `ReverseY` into `Reverse`.
 * Add docker execution for `CLI`.
