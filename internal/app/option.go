@@ -1,6 +1,8 @@
 package app
 
-import "flag"
+import (
+	"flag"
+)
 
 var OptionVertical = &BoolOption{
 	option: option{
@@ -99,6 +101,7 @@ type Option interface {
 	RegisterFlag()
 	Name() string
 	Usage() string
+	IsSet() bool
 }
 
 // option for subcommands
@@ -115,6 +118,18 @@ func (o *option) Name() string {
 // Usage return option usage
 func (o *option) Usage() string {
 	return o.usage
+}
+
+// IsSet return flag is set
+func (o *option) IsSet() bool {
+	isSet := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == o.name {
+			isSet = true
+			return
+		}
+	})
+	return isSet
 }
 
 // StringOption wrap string option

@@ -110,8 +110,13 @@ func filter(c imgedit.FileConverter) {
 }
 
 func addstring(c imgedit.FileConverter) {
+	var point *image.Point
+	// If both left and top are not set, it will be centered
+	if OptionLeft.IsSet() && OptionTop.IsSet() {
+		point = &image.Point{X: OptionLeft.Int(), Y: OptionTop.Int()}
+	}
 	option := &imgedit.StringOptions{
-		Point: &image.Point{X: OptionLeft.Int(), Y: OptionTop.Int()},
+		Point: point,
 		Font:  &imgedit.Font{TrueTypeFont: getTtf(OptionTtf.String()), Size: OptionSize.Float64(), Color: getColor(OptionColor.String())},
 	}
 	c.AddString(OptionText.String(), option)
