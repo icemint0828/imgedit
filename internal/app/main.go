@@ -1,12 +1,14 @@
 package app
 
 import (
+	"errors"
 	"fmt"
 	"image"
 	"image/color"
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/golang/freetype/truetype"
@@ -130,6 +132,7 @@ func getColor(colorString string) color.Color {
 	if colorString == "" {
 		return nil
 	}
+	// specify by color name
 	switch colorString {
 	case "black":
 		return color.Black
@@ -141,9 +144,35 @@ func getColor(colorString string) color.Color {
 		return color.RGBA{R: 0, G: 0, B: 255, A: 255}
 	case "green":
 		return color.RGBA{R: 0, G: 255, B: 0, A: 255}
-	default:
+	}
+	// specify by color code(like #FF0000)
+	if string(colorString[0]) != "#" || len(colorString) != 7 {
 		return nil
 	}
+	red, err := getColorBits(colorString[1:3])
+	if err != nil {
+		return nil
+	}
+	green, err := getColorBits(colorString[3:5])
+	if err != nil {
+		return nil
+	}
+	blue, err := getColorBits(colorString[5:7])
+	if err != nil {
+		return nil
+	}
+	return color.RGBA{R: red, G: green, B: blue, A: 255}
+}
+
+func getColorBits(colorString string) (uint8, error) {
+	v, err := strconv.ParseInt(colorString, 16, 64)
+	if err != nil {
+		return 0, err
+	}
+	if v < 0 || 255 < v {
+		return 0, errors.New("color string is out of range")
+	}
+	return uint8(v), nil
 }
 
 func getModel(modeString string) imgedit.FilterModel {

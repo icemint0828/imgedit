@@ -82,7 +82,7 @@ var OptionSize = &UintOption{
 var OptionColor = &StringOption{
 	option: option{
 		name:  "color",
-		usage: "font color(back, white, red, blue, green).",
+		usage: "font color with string (back, white, red, blue, green). or specify by color code(like #FF0000)",
 	},
 	defaultVal: "",
 }
