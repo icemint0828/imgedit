@@ -62,7 +62,7 @@
 ## Usage (Package)
 
 ```shell
-$ go get github.com/icemint0828/imgedit@v1.5.0
+$ go get github.com/icemint0828/imgedit@v1.6.0
 ```
 
 An example with file conversion is as follows.
