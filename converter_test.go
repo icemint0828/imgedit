@@ -482,6 +482,11 @@ func Test_converter_AddString(t *testing.T) {
 			args:   args{text: "Rabbit", options: &StringOptions{Font: &Font{Size: 400, TrueTypeFont: popTtf, Color: color.Black}, Outline: &Outline{}}},
 		},
 		{
+			name:   "multi lines font size 200 with outline",
+			fields: fields{Image: GetPngImage()},
+			args:   args{text: "Rabbit\nmulti lines\noutline", options: &StringOptions{Font: &Font{Size: 200, TrueTypeFont: popTtf, Color: color.White}, Outline: &Outline{Color: color.RGBA{R: 255, G: 192, B: 203, A: 255}, Width: 100}}},
+		},
+		{
 			name:   "empty",
 			fields: fields{Image: GetPngImage()},
 			args:   args{text: ""},
