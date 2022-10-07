@@ -7,6 +7,7 @@ import (
 	"image/draw"
 	"io/ioutil"
 	"math"
+	"regexp"
 
 	"github.com/golang/freetype"
 	"github.com/golang/freetype/truetype"
@@ -295,43 +296,54 @@ func (c *converter) AddString(text string, options *StringOptions) {
 
 // drawString draw string at adjusted position
 func drawString(dst draw.Image, drawer *font.Drawer, outlineDrawer *font.Drawer, text string, options *StringOptions) {
-	// notice : Dot values are determined by feeling.
-	// set drawer first position
-	if options.Point == nil {
-		drawer.Dot.X, drawer.Dot.Y = (fixed.I(dst.Bounds().Dx())-drawer.MeasureString(text))/2, (fixed.I(dst.Bounds().Dy())+(drawer.Face.Metrics().Ascent+drawer.Face.Metrics().Descent)/2)/2
-	} else {
-		drawer.Dot.X, drawer.Dot.Y = fixed.I(options.Point.X)-drawer.MeasureString(text)/2, fixed.I(options.Point.Y)+((drawer.Face.Metrics().Ascent+drawer.Face.Metrics().Descent)/2)/2
-	}
-	if outlineDrawer == nil {
-		drawer.DrawString(text)
-		return
-	}
+	// support for multiple lines
+	lines := regexp.MustCompile("\r\n|\n\r|\n|\r").Split(text, -1)
 
-	// notice : width values are determined by feeling
-	width := drawer.Face.Metrics().Height / 128 / 100 * fixed.Int26_6(options.Outline.Width)
+	for i := 1; i <= len(lines); i++ {
+		text = lines[i-1]
 
-	// draw letter by letter for adjust outline position
-	for _, s := range []byte(text) {
-		// As a technique, the image is drawn on the four corners,
-		// but that is an incomplete implementation of OUTLINE.
+		// notice : Dot values are determined by feeling.
+		// set drawer first position
+		if options.Point == nil {
+			drawer.Dot.X, drawer.Dot.Y = (fixed.I(dst.Bounds().Dx())-drawer.MeasureString(text))/2, (fixed.I(dst.Bounds().Dy())+(drawer.Face.Metrics().Ascent+drawer.Face.Metrics().Descent)/2)/2
+		} else {
+			drawer.Dot.X, drawer.Dot.Y = fixed.I(options.Point.X)-drawer.MeasureString(text)/2, fixed.I(options.Point.Y)+((drawer.Face.Metrics().Ascent+drawer.Face.Metrics().Descent)/2)/2
+		}
+		// Adjust for line breaks.
+		diff := -float64(len(lines)-1)/float64(2) + float64(i-1)
+		drawer.Dot.Y += fixed.I(int(diff*2)) * drawer.Face.Metrics().Height / 128
 
-		// left top
-		outlineDrawer.Dot = fixed.Point26_6{X: drawer.Dot.X - width, Y: drawer.Dot.Y - width}
-		outlineDrawer.DrawBytes([]byte{s})
+		if outlineDrawer == nil {
+			drawer.DrawString(text)
+			continue
+		}
 
-		// left bottom
-		outlineDrawer.Dot = fixed.Point26_6{X: drawer.Dot.X - width, Y: drawer.Dot.Y + width}
-		outlineDrawer.DrawBytes([]byte{s})
+		// notice : width values are determined by feeling
+		width := drawer.Face.Metrics().Height / 128 / 100 * fixed.Int26_6(options.Outline.Width)
 
-		// right top
-		outlineDrawer.Dot = fixed.Point26_6{X: drawer.Dot.X + width, Y: drawer.Dot.Y - width}
-		outlineDrawer.DrawBytes([]byte{s})
+		// draw letter by letter for adjust outline position
+		for _, s := range []byte(text) {
+			// As a technique, the image is drawn on the four corners,
+			// but that is an incomplete implementation of OUTLINE.
 
-		// right bottom
-		outlineDrawer.Dot = fixed.Point26_6{X: drawer.Dot.X + width, Y: drawer.Dot.Y + width}
-		outlineDrawer.DrawBytes([]byte{s})
+			// left top
+			outlineDrawer.Dot = fixed.Point26_6{X: drawer.Dot.X - width, Y: drawer.Dot.Y - width}
+			outlineDrawer.DrawBytes([]byte{s})
 
-		drawer.DrawBytes([]byte{s})
+			// left bottom
+			outlineDrawer.Dot = fixed.Point26_6{X: drawer.Dot.X - width, Y: drawer.Dot.Y + width}
+			outlineDrawer.DrawBytes([]byte{s})
+
+			// right top
+			outlineDrawer.Dot = fixed.Point26_6{X: drawer.Dot.X + width, Y: drawer.Dot.Y - width}
+			outlineDrawer.DrawBytes([]byte{s})
+
+			// right bottom
+			outlineDrawer.Dot = fixed.Point26_6{X: drawer.Dot.X + width, Y: drawer.Dot.Y + width}
+			outlineDrawer.DrawBytes([]byte{s})
+
+			drawer.DrawBytes([]byte{s})
+		}
 	}
 }
 
